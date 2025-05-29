@@ -4,9 +4,11 @@ A Singleplayer Text-Adventure Implementation of DayZ (Zombie Survival Game)
 This is a WIP. 
 It is very basic.
 
-Example: https://neurofluxation.github.io/TextZ/
+# Example
 
-#License
+https://neurofluxation.github.io/TextZ/
+
+# License
 This code is provided under CC 4.0.
 
 You must give appropriate credit if using this code in any way.
