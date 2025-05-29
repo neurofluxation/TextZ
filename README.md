@@ -1,8 +1,12 @@
 # TextZ
 A Singleplayer Text-Adventure Implementation of DayZ (Zombie Survival Game)
 
+Mostly put together using various LLM's and basic code management.
+Code is messy.
 This is a WIP. 
 It is very basic.
+It is extensible.
+It is uncommented.
 
 # Example
 
