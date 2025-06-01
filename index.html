@@ -35,28 +35,39 @@ body {
 }
 
 .game-container {
-    max-width: 1200px;
+    max-width: 1400px;
     width: 100%;
     margin: 0 auto;
     background: rgba(0, 0, 0, 0.95);
     border-radius: 8px;
     padding: 20px;
     min-height: calc(100vh - 40px);
+    display: grid;
+    grid-template-columns: 1fr 800px;
+    grid-template-rows: auto auto 1fr auto;
+    gap: 10px;
+    grid-template-areas: 
+        "title title"
+        "stats stats"
+        "main sidebar"
+        "actions actions";
 }
 
 .title {
+    grid-area: title;
     text-align: center;
     font-size: 2.5em;
     color: #e74c3c;
-    margin-bottom: 30px;
+    margin-bottom: 0;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .stats-bar {
+    grid-area: stats;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 15px;
-    margin-bottom: 25px;
+    margin-bottom: 0;
     padding: 20px;
     background: rgba(15, 15, 15, 0.8);
     border-radius: 8px;
@@ -92,11 +103,27 @@ body {
 .hunger-fill { background: linear-gradient(90deg, #f39c12, #d68910); }
 .thirst-fill { background: linear-gradient(90deg, #3498db, #2980b9); }
 
+/* Main content area */
+.main-content {
+    grid-area: main;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Sidebar area */
+.sidebar {
+    grid-area: sidebar;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 .location-info {
     background: rgba(10, 10, 10, 0.9);
     padding: 25px;
     border-radius: 8px;
-    margin-bottom: 25px;
+    margin-bottom: 0;
     border-left: 4px solid #e74c3c;
 }
 
@@ -121,6 +148,8 @@ body {
     line-height: 1.6;
     font-size: 1em;
     min-height: 120px;
+    max-height: 400px;
+    overflow-y: auto;
 }
 
 .actions {
@@ -219,7 +248,6 @@ body {
 .map {
     position: relative;
     width: 100%;
-    max-width: 800px;
     height: 500px;
     margin: 0 auto;
     background-image: url('map.png');
@@ -476,6 +504,22 @@ a:hover {
 }
 
 /* Mobile Responsive Design */
+@media (max-width: 1024px) {
+    .game-container {
+        grid-template-columns: 1fr;
+        grid-template-areas: 
+            "title"
+            "stats"
+            "main"
+            "sidebar"
+            "actions";
+    }
+    
+    .stats-bar {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+}
+
 @media (max-width: 768px) {
     body {
         padding: 10px;
@@ -484,18 +528,17 @@ a:hover {
     .game-container {
         padding: 15px;
         min-height: calc(100vh - 20px);
+        gap: 15px;
     }
 
     .title {
         font-size: 2em;
-        margin-bottom: 20px;
     }
 
     .stats-bar {
         grid-template-columns: 1fr;
         gap: 10px;
         padding: 15px;
-        margin-bottom: 20px;
     }
 
     .stat-bar {
@@ -504,7 +547,6 @@ a:hover {
 
     .location-info {
         padding: 20px;
-        margin-bottom: 20px;
     }
 
     .location-name {
@@ -514,7 +556,6 @@ a:hover {
 
     .story-text {
         padding: 20px;
-        margin-bottom: 20px;
         min-height: 100px;
         font-size: 0.95em;
     }
@@ -522,7 +563,6 @@ a:hover {
     .actions {
         grid-template-columns: 1fr;
         gap: 12px;
-        margin-bottom: 20px;
     }
 
     .action-btn {
@@ -533,7 +573,6 @@ a:hover {
 
     .inventory {
         padding: 15px;
-        margin-bottom: 20px;
     }
 
     .inventory-title {
@@ -548,12 +587,10 @@ a:hover {
 
     .map-container {
         padding: 15px;
-        margin-bottom: 20px;
     }
 
     .map {
-        height: 300px;
-        max-width: 100%;
+        height: 250px;
     }
 
     .map-location {
@@ -651,7 +688,7 @@ a:hover {
         <p>By Barrie</p>
         <button id="startBtn">Start Game</button>
     </div>
-    <div class="game-container">
+    <div class="">
         <div class="stats-bar">
             <div class="stat">
                 <div class="stat-bar">
