@@ -6,569 +6,626 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DayZ Text Adventure</title>
     <style>
-      * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-      }
-      .material-symbols-outlined {
-        font-family: 'Material Symbols Outlined';
-        font-variation-settings:
-          'FILL' 0,
-          'wght' 400,
-          'GRAD' 0,
-          'opsz' 24;
-      }
-      html, body {
-          height: 100%;
-          overflow: hidden; /* Prevent full-page scroll */
-      }
-      body {
-          font-family: 'Courier New', monospace;
-          background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-          color: #ecf0f1;
-          min-height: 100vh;
-          padding: 10px; /* Reduced from 20px */
-          display: flex;
-          flex-direction: column;
-      }
-
-      .game-container {
-          max-width: 100%;
-          width: 100%;
-          margin: 0;
-          background: rgba(0, 0, 0, 0.95);
-          border-radius: 0px;
-          padding: 15px; /* Reduced from 20px */
-          display: flex;
-          flex-direction: column;
-          flex: 1; /* Fill remaining space */
-          overflow-y: auto; /* Scroll internally if content exceeds */
-          min-height: 0; /* Allows container to shrink within viewport */
-      }
-
-      .title {
-          text-align: center;
-          font-size: 2em; /* Reduced from 2.5em */
-          color: #e74c3c;
-          margin-bottom: 10px; /* Reduced from 20px */
-          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-      }
-
-      .stats-bar {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Reduced min width */
-          gap: 10px; /* Reduced from 15px */
-          margin-bottom: 10px; /* Reduced from 20px */
-          padding: 10px; /* Reduced from 15px */
-          background: rgba(15, 15, 15, 0.8);
-          border-radius: 0px;
-      }
-
-      .stat {
-          text-align: center;
-      }
-
-      .stat-label {
-          font-size: 0.8em; /* Reduced from 0.9em */
-          color: #bdc3c7;
-          margin-bottom: 3px; /* Reduced from 5px */
-      }
-
-      .stat-bar {
-          height: 15px; /* Reduced from 20px */
-          background: rgba(44, 62, 80, 0.8);
-          border-radius: 0px; /* Adjusted for smaller height */
-          overflow: hidden;
-          border: 1px solid #34495e;
-      }
-
-      .stat-fill {
-          height: 100%;
-          transition: width 0.3s ease, background-color 0.3s ease;
-      }
-
-      .health-fill { background: linear-gradient(90deg, #e74c3c, #c0392b); }
-      .hunger-fill { background: linear-gradient(90deg, #f39c12, #d68910); }
-      .thirst-fill { background: linear-gradient(90deg, #3498db, #2980b9); }
-
-      .location-info {
-          background: rgba(10, 10, 10, 0.9);
-          padding: 15px; /* Reduced from 20px */
-          border-radius: 0px;
-          margin-bottom: 10px; /* Reduced from 20px */
-          border-left: 4px solid #e74c3c;
-      }
-
-      .location-name {
-          font-size: 1.3em; /* Reduced from 1.5em */
-          color: #e74c3c;
-          margin-bottom: 5px; /* Reduced from 10px */
-      }
-
-      .story-text {
-          background: rgba(20, 20, 20, 0.8);
-          padding: 15px; /* Reduced from 20px */
-          border-radius: 0px;
-          margin-bottom: 10px; /* Reduced from 20px */
-          line-height: 1.4; /* Adjusted from 1.6 */
-          max-height: 150px; /* Limit height */
-          overflow-y: auto; /* Scroll if content overflows */
-          font-size: 0.9em; /* Reduced slightly */
-      }
-
-      .actions {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Reduced min width */
-          gap: 8px; /* Reduced from 10px */
-          margin-bottom: 10px; /* Reduced from 20px */
-      }
-
-      .action-btn {
-          background: linear-gradient(135deg, #34495e, #2c3e50);
-          color: #ecf0f1;
-          border: none;
-          padding: 10px 15px; /* Reduced from 15px 20px */
-          border-radius: 0px; /* Adjusted for smaller size */
-          cursor: pointer;
-          font-family: inherit;
-          font-size: 0.9em; /* Reduced from 1em */
-          transition: all 0.3s ease;
-          border: 2px solid transparent;
-      }
-
-      .action-btn:hover {
-          background: linear-gradient(135deg, #e74c3c, #c0392b);
-          border-color: #e74c3c;
-          transform: translateY(-2px);
-          box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
-      }
-
-      .action-btn:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-          transform: none;
-          box-shadow: none;
-      }
-
-      .inventory {
-          background: rgba(26, 37, 47, 0.6);
-          padding: 10px; /* Reduced from 15px */
-          border-radius: 0px;
-          margin-bottom: 10px; /* Reduced from 20px */
-      }
-
-      .inventory-title {
-          color: #e74c3c;
-          margin-bottom: 5px; /* Reduced from 10px */
-          font-size: 1.1em; /* Reduced from 1.2em */
-      }
-
-      .inventory-items {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 8px; /* Reduced from 10px */
-          max-height: 80px; /* Limit height */
-          overflow-y: auto; /* Scroll if content overflows */
-      }
-
-      .inventory-item {
-          background: rgba(52, 73, 94, 0.8);
-          padding: 6px 10px; /* Reduced from 8px 12px */
-          border-radius: 0px;
-          font-size: 0.8em; /* Reduced from 0.9em */
-          border: 1px solid #34495e;
-      }
-
-      .inventory-item.equipped {
-          background: rgba(46, 204, 113, 0.8);
-          border-color: #27ae60;
-          font-weight: bold;
-      }
-
-      .map-container {
-          background: rgba(10, 10, 10, 0.9);
-          padding: 15px; /* Reduced from 20px */
-          border-radius: 0px;
-          margin-bottom: 10px; /* Reduced from 20px */
-      }
-
-      .map-title {
-          color: #3498db;
-          margin-bottom: 10px; /* Reduced from 15px */
-          font-size: 1.1em; /* Reduced from 1.2em */
-          text-align: center;
-      }
-
-      .map {
-          position: relative;
-          width: 100%;
-          max-width: 500px; /* Reduced from 600px */
-          aspect-ratio: 3 / 2; /* Maintain 1.5:1 ratio (replaces fixed 400px height) */
-          margin: 0 auto;
-          background-image: url('map.png'); /* Replace with your map image path */
-          background-size: contain; /* Changed from cover to avoid cropping */
-          background-position: center;
-          background-repeat: no-repeat;
-          border-radius: 0px;
-      }
-
-      .map-location {
-          position: absolute;
-          width: 24px; /* Reduced from 30px */
-          height: 24px; /* Reduced from 30px */
-          background: rgba(52, 73, 94, 0.8);
-          border: 2px solid #34495e;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 0.7em; /* Reduced from 0.9em */
-          color: #ecf0f1;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          text-align: center;
-      }
-
-      .map-location:hover {
-          background: rgba(46, 204, 113, 0.8);
-          border-color: #27ae60;
-          transform: scale(1.2);
-      }
-
-      .map-location.current {
-          background: rgba(231, 76, 60, 0.8);
-          border-color: #e74c3c;
-          color: #fff;
-          font-weight: bold;
-          animation: pulse-location 2s infinite;
-      }
-
-      .map-location.connected {
-          background: rgba(46, 204, 113, 0.6);
-          border-color: #27ae60;
-          cursor: pointer;
-      }
-
-      .map-location.connected:hover {
-          background: rgba(46, 204, 113, 0.8);
-          transform: scale(1.2);
-      }
-
-      @keyframes pulse-location {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); }
-          50% { box-shadow: 0 0 0 8px rgba(231, 76, 60, 0); }
-      }
-
-      /* Adjusted map location positions for smaller map (scaled proportionally) */
-      .map-berezino { top: 32%; left: 81%; }
-      .map-svetlojarsk { top: 10%; left: 89%; }
-      .map-novodmitrovsk { top: 3%; left: 73%; }
-      .map-severograd { top: 12%; left: 50%; }
-      .map-solnichniy { top: 54%; left: 83%; }
-      .map-kamyshovo { top: 71%; left: 76%; }
-      .map-elektro { top: 81%; left: 65%; }
-      .map-prigorodki { top: 74%; left: 58%; }
-      .map-cherno { top: 76%; left: 45%; }
-      .map-balota { top: 74%; left: 31%; }
-      .map-komarovo { top: 82%; left: 21%; }
-      .map-kamenka { top: 81%; left: 10%; }
-      .map-zelenogorsk { top: 61%; left: 14%; }
-      .map-vybor { top: 38%; left: 22%; }
-      .map-novy_sobor { top: 45%; left: 44%; }
-      .map-myshkino { top: 49%; left: 7%; }
-      .map-nwaf { top: 28%; left: 27%; }
-      .map-tisy { top: 6%; left: 8%; }
-      .map-novaya_petrovka { top: 12%; left: 20%; }
-      .map-lopatino { top: 31%; left: 16%; }
-      .map-kamensk { top: 8%; left: 15%; }
-      .map-krasnostav { top: 15%; left: 70%; }
-      .map-gorka { top: 25%; left: 65%; }
-      .map-polana { top: 35%; left: 60%; }
-      .map-rify { top: 20%; left: 85%; }
-      .map-stary_sobor { top: 40%; left: 35%; }
-      .map-kabanino { top: 35%; left: 30%; }
-      .map-guglovo { top: 55%; left: 50%; }
-      .map-mogilevka { top: 60%; left: 40%; }
-      .map-staroye { top: 65%; left: 55%; }
-      .map-tulga { top: 68%; left: 80%; }
-      .map-pavlovo { top: 70%; left: 25%; }
-      .map-kozlovka { top: 65%; left: 20%; }
-      .map-pogorevka { top: 55%; left: 18%; }
-
-      .map-roads {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          pointer-events: none;
-      }
-
-      .danger {
-          color: #e74c3c;
-          font-weight: bold;
-          animation: pulse 2s infinite;
-      }
-
-      @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.7; }
-      }
-
-      .game-over {
-          text-align: center;
-          color: #e74c3c;
-          font-size: 1.3em; /* Reduced from 1.5em */
-          padding: 15px; /* Reduced from 20px */
-          background: rgba(231, 76, 60, 0.2);
-          border-radius: 0px;
-          margin: 10px 0; /* Reduced from 20px */
-      }
-
-      .inventory-item:hover {
-          background: rgba(231, 76, 60, 0.8);
-          border-color: #e74c3c;
-          transform: scale(1.05);
-          transition: all 0.3s ease;
-      }
-
-      .timer-container {
-          display: none;
-          position: fixed; /* Changed from absolute to fixed */
-          top: 0;
-          left: 0;
-          width: 100vw;
-          height: 100vh;
-          background-color: rgba(0, 0, 0, 0.85);
-          z-index: 999;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          transition: all 0.3s ease;
-      }
-
-      .timer-text {
-          color: #ecf0f1;
-          font-size: 0.9em; /* Reduced from 1em */
-          margin-bottom: 5px; /* Reduced from 10px */
-      }
-
-      .timer-bar {
-          height: 15px; /* Reduced from 20px */
-          background: rgba(44, 62, 80, 0.8);
-          border-radius: 0px;
-          overflow: hidden;
-          border: 1px solid #34495e;
-          width: 100px; /* Reduced from 300px */
-      }
-
-      .timer-fill {
-          height: 100%;
-          background: linear-gradient(90deg, #e74c3c, #c0392b);
-          width: 100%;
-          transition: width 0.15s linear;
-      }
-
-      .tooltip {
-          position: absolute;
-          background: rgba(26, 46, 47, 0.95); /* Fixed typo from rgba(26,2,37,25) */
-          color: #ecf0f1;
-          padding: 6px 10px; /* Reduced from 8px 12px */
-          border-radius: 0px;
-          border: 1px solid #e74c3c;
-          font-size: 0.8em; /* Reduced from 0.9em */
-          max-width: 180px; /* Reduced from 200px */
-          line-height: 1.4;
-          z-index: 1000;
-          pointer-events: none;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-          display: none;
-      }
-
-      .tooltip::before {
-          content: '';
-          position: absolute;
-          top: 100%;
-          left: 50%;
-          transform: translateX(-50%);
-          border: 5px solid transparent; /* Reduced from 6px */
-          border-top-color: #e74c3c;
-      }
-      .story-text, 
-      .inventory-items{
-          max-height: 20vh; /* Use up to 20% of screen height */
-          overflow-y: auto;
-      }
-      .map {
-          width: 100%;
-          max-width: 100%;
-          height: auto; /* Let it shrink if needed */
-          aspect-ratio: 3 / 2; /* Keep ratio but avoid forcing height */
-      }
-      @media (max-width: 768px) {
-          body {
-              padding: 5px;
-          }
-
-          .game-container {
-              padding: 10px;
-          }
-
-          .title {
-              font-size: 1.5em;
-          }
-
-          .stats-bar {
-              grid-template-columns: 1fr;
-              gap: 8px;
-              padding: 8px;
-          }
-
-          .stat-bar {
-              height: 12px;
-          }
-
-          .story-text {
-              max-height: 80px;
-              font-size: 0.8em;
-              padding: 10px;
-          }
-
-          .location-info {
-              padding: 10px;
-          }
-
-          .location-name {
-              font-size: 1.1em;
-          }
-
-          .actions {
-              grid-template-columns: 1fr;
-              gap: 6px;
-          }
-
-          .action-btn {
-              padding: 8px 12px;
-              font-size: 0.8em;
-          }
-
-          .inventory {
-              padding: 8px;
-          }
-
-          .inventory-items {
-              max-height: 60px;
-          }
-
-          .inventory-item {
-              padding: 5px 8px;
-              font-size: 0.7em;
-          }
-
-          .map-container {
-              padding: 10px;
-          }
-
-          .map {
-              max-width: 300px;
-          }
-
-          .map-location {
-              width: 20px;
-              height: 20px;
-              font-size: 0.6em;
-          }
-
-          .timer-bar {
-              width: 80px;
-              height: 12px;
-          }
-
-          .timer-text {
-              font-size: 0.8em;
-          }
-
-          .tooltip {
-              max-width: 150px;
-              font-size: 0.7em;
-              padding: 5px 8px;
-          }
-      }
-
-      a { color: yellow; }
-      
-      #location-description {
-          margin-bottom: 16px;
-      }
-      
-      #health-text, #hunger-text, #thirst-text {
-        opacity: 0;
-        height: 0;
-        width: 0;
-        overflow: hidden;
-      }
-      .stat-fill {
-        font-size: 0.65em;
-        line-height: 1em;
-      }
-      @media (max-width: 480px) {
-          .stats-bar, .actions {
-              grid-template-columns: 1fr;
-          }
-
-          .title {
-              font-size: 1.2em;
-          }
-
-          .action-btn {
-              font-size: 0.8em;
-              padding: 8px;
-          }
-
-          .map-location {
-              width: 20px;
-              height: 20px;
-              font-size: 0.6em;
-          }
-      }
-      *::-webkit-scrollbar-track {
-        background-color: #282828;
-      }
-
-      *::-webkit-scrollbar {
-        width: 4px;
-        height: 4px;
-        background-color: #F5F5F5;
-      }
-
-      *::-webkit-scrollbar-thumb {
-        background-color: #f32828;
-        border: 0px;
-      }
-      #start {
-        width: 100%;
-        height: 100vh;
-        background-color: rgba(0,0,0,0.85);
-        text-align: center;
-        line-height: 1em;
-        position: absolute;
-        z-index: 909999;
-      }
-      #startBtn {
-          margin-top: 2em;
-          border: 2px solid white;
-          background-color: darkgreen;
-          padding: 10px;
-          font-size: 2em;
-          cursor: pointer;
-          color: white;
-          transition: all 0.1s linear;
-      }
-      #startBtn:hover {
-          transform: rotate(3deg) scale(1.1);
-          background-color: darkorange;
-      }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24;
+}
+
+html, body {
+    height: 100%;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+body {
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+    color: #ecf0f1;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.game-container {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    background: rgba(0, 0, 0, 0.95);
+    border-radius: 8px;
+    padding: 20px;
+    min-height: calc(100vh - 40px);
+}
+
+.title {
+    text-align: center;
+    font-size: 2.5em;
+    color: #e74c3c;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.stats-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+    padding: 20px;
+    background: rgba(15, 15, 15, 0.8);
+    border-radius: 8px;
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 0.9em;
+    color: #bdc3c7;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.stat-bar {
+    height: 24px;
+    background: rgba(44, 62, 80, 0.8);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #34495e;
+    position: relative;
+}
+
+.stat-fill {
+    height: 100%;
+    transition: width 0.3s ease, background-color 0.3s ease;
+    border-radius: 12px;
+}
+
+.health-fill { background: linear-gradient(90deg, #e74c3c, #c0392b); }
+.hunger-fill { background: linear-gradient(90deg, #f39c12, #d68910); }
+.thirst-fill { background: linear-gradient(90deg, #3498db, #2980b9); }
+
+.location-info {
+    background: rgba(10, 10, 10, 0.9);
+    padding: 25px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    border-left: 4px solid #e74c3c;
+}
+
+.location-name {
+    font-size: 1.8em;
+    color: #e74c3c;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+#location-description {
+    margin-bottom: 16px;
+    line-height: 1.6;
+    font-size: 1.1em;
+}
+
+.story-text {
+    background: rgba(20, 20, 20, 0.8);
+    padding: 25px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    line-height: 1.6;
+    font-size: 1em;
+    min-height: 120px;
+}
+
+.actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.action-btn {
+    background: linear-gradient(135deg, #34495e, #2c3e50);
+    color: #ecf0f1;
+    border: none;
+    padding: 15px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1em;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    min-height: 50px;
+}
+
+.action-btn:hover {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    border-color: #e74c3c;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+}
+
+.action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.inventory {
+    background: rgba(26, 37, 47, 0.6);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+}
+
+.inventory-title {
+    color: #e74c3c;
+    margin-bottom: 15px;
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+.inventory-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    min-height: 50px;
+}
+
+.inventory-item {
+    background: rgba(52, 73, 94, 0.8);
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    border: 1px solid #34495e;
+    transition: all 0.3s ease;
+}
+
+.inventory-item.equipped {
+    background: rgba(46, 204, 113, 0.8);
+    border-color: #27ae60;
+    font-weight: bold;
+}
+
+.inventory-item:hover {
+    background: rgba(231, 76, 60, 0.8);
+    border-color: #e74c3c;
+    transform: scale(1.05);
+}
+
+.map-container {
+    background: rgba(10, 10, 10, 0.9);
+    padding: 25px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+}
+
+.map-title {
+    color: #3498db;
+    margin-bottom: 20px;
+    font-size: 1.4em;
+    text-align: center;
+    font-weight: bold;
+}
+
+.map {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    height: 500px;
+    margin: 0 auto;
+    background-image: url('map.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 8px;
+    border: 2px solid #34495e;
+}
+
+.map-location {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    background: rgba(52, 73, 94, 0.8);
+    border: 2px solid #34495e;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8em;
+    color: #ecf0f1;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    font-weight: bold;
+}
+
+.map-location:hover {
+    background: rgba(46, 204, 113, 0.8);
+    border-color: #27ae60;
+    transform: scale(1.3);
+    z-index: 10;
+}
+
+.map-location.current {
+    background: rgba(231, 76, 60, 0.8);
+    border-color: #e74c3c;
+    color: #fff;
+    font-weight: bold;
+    animation: pulse-location 2s infinite;
+    z-index: 5;
+}
+
+.map-location.connected {
+    background: rgba(46, 204, 113, 0.6);
+    border-color: #27ae60;
+    cursor: pointer;
+}
+
+.map-location.connected:hover {
+    background: rgba(46, 204, 113, 0.8);
+    transform: scale(1.3);
+    z-index: 10;
+}
+
+@keyframes pulse-location {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); }
+    50% { box-shadow: 0 0 0 12px rgba(231, 76, 60, 0); }
+}
+
+/* Map location positions */
+.map-berezino { top: 32%; left: 81%; }
+.map-svetlojarsk { top: 10%; left: 89%; }
+.map-novodmitrovsk { top: 3%; left: 73%; }
+.map-severograd { top: 12%; left: 50%; }
+.map-solnichniy { top: 54%; left: 83%; }
+.map-kamyshovo { top: 71%; left: 76%; }
+.map-elektro { top: 81%; left: 65%; }
+.map-prigorodki { top: 74%; left: 58%; }
+.map-cherno { top: 76%; left: 45%; }
+.map-balota { top: 74%; left: 31%; }
+.map-komarovo { top: 82%; left: 21%; }
+.map-kamenka { top: 81%; left: 10%; }
+.map-zelenogorsk { top: 61%; left: 14%; }
+.map-vybor { top: 38%; left: 22%; }
+.map-novy_sobor { top: 45%; left: 44%; }
+.map-myshkino { top: 49%; left: 7%; }
+.map-nwaf { top: 28%; left: 27%; }
+.map-tisy { top: 6%; left: 8%; }
+.map-novaya_petrovka { top: 12%; left: 20%; }
+.map-lopatino { top: 31%; left: 16%; }
+.map-kamensk { top: 8%; left: 15%; }
+.map-krasnostav { top: 15%; left: 70%; }
+.map-gorka { top: 25%; left: 65%; }
+.map-polana { top: 35%; left: 60%; }
+.map-rify { top: 20%; left: 85%; }
+.map-stary_sobor { top: 40%; left: 35%; }
+.map-kabanino { top: 35%; left: 30%; }
+.map-guglovo { top: 55%; left: 50%; }
+.map-mogilevka { top: 60%; left: 40%; }
+.map-staroye { top: 65%; left: 55%; }
+.map-tulga { top: 68%; left: 80%; }
+.map-pavlovo { top: 70%; left: 25%; }
+.map-kozlovka { top: 65%; left: 20%; }
+.map-pogorevka { top: 55%; left: 18%; }
+
+.danger {
+    color: #e74c3c;
+    font-weight: bold;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.game-over {
+    text-align: center;
+    color: #e74c3c;
+    font-size: 1.8em;
+    padding: 30px;
+    background: rgba(231, 76, 60, 0.2);
+    border-radius: 8px;
+    margin: 25px 0;
+    border: 2px solid #e74c3c;
+}
+
+.timer-container {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.85);
+    z-index: 9999;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.timer-text {
+    color: #ecf0f1;
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.timer-bar {
+    height: 25px;
+    background: rgba(44, 62, 80, 0.8);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid #34495e;
+    width: 400px;
+}
+
+.timer-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #e74c3c, #c0392b);
+    width: 100%;
+    transition: width 0.15s linear;
+    border-radius: 12px;
+}
+
+.tooltip {
+    position: absolute;
+    background: rgba(26, 46, 47, 0.95);
+    color: #ecf0f1;
+    padding: 10px 15px;
+    border-radius: 6px;
+    border: 1px solid #e74c3c;
+    font-size: 0.9em;
+    max-width: 250px;
+    line-height: 1.4;
+    z-index: 1000;
+    pointer-events: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    display: none;
+}
+
+.tooltip::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 8px solid transparent;
+    border-top-color: #e74c3c;
+}
+
+a { 
+    color: #f1c40f; 
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover {
+    color: #f39c12;
+    text-decoration: underline;
+}
+
+#health-text, #hunger-text, #thirst-text {
+    display: none;
+}
+
+#start {
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.9);
+    text-align: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#startBtn {
+    margin-top: 2em;
+    border: 3px solid white;
+    background-color: #27ae60;
+    padding: 15px 30px;
+    font-size: 1.8em;
+    cursor: pointer;
+    color: white;
+    transition: all 0.2s ease;
+    border-radius: 8px;
+    font-weight: bold;
+    font-family: inherit;
+}
+
+#startBtn:hover {
+    transform: scale(1.05) rotate(1deg);
+    background-color: #e67e22;
+    box-shadow: 0 5px 15px rgba(231, 126, 34, 0.4);
+}
+
+/* Custom scrollbar */
+*::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    background-color: #2c3e50;
+    border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #e74c3c;
+    border-radius: 4px;
+    border: 1px solid #2c3e50;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background-color: #c0392b;
+}
+
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    .game-container {
+        padding: 15px;
+        min-height: calc(100vh - 20px);
+    }
+
+    .title {
+        font-size: 2em;
+        margin-bottom: 20px;
+    }
+
+    .stats-bar {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .stat-bar {
+        height: 20px;
+    }
+
+    .location-info {
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .location-name {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+
+    .story-text {
+        padding: 20px;
+        margin-bottom: 20px;
+        min-height: 100px;
+        font-size: 0.95em;
+    }
+
+    .actions {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .action-btn {
+        padding: 12px 15px;
+        font-size: 0.9em;
+        min-height: 45px;
+    }
+
+    .inventory {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .inventory-title {
+        font-size: 1.2em;
+        margin-bottom: 12px;
+    }
+
+    .inventory-item {
+        padding: 8px 12px;
+        font-size: 0.85em;
+    }
+
+    .map-container {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .map {
+        height: 300px;
+        max-width: 100%;
+    }
+
+    .map-location {
+        width: 24px;
+        height: 24px;
+        font-size: 0.7em;
+    }
+
+    .timer-bar {
+        width: 280px;
+        height: 20px;
+    }
+
+    .timer-text {
+        font-size: 1em;
+        margin-bottom: 15px;
+    }
+
+    .tooltip {
+        max-width: 200px;
+        font-size: 0.8em;
+        padding: 8px 12px;
+    }
+
+    #startBtn {
+        font-size: 1.5em;
+        padding: 12px 25px;
+    }
+}
+
+@media (max-width: 480px) {
+    .title {
+        font-size: 1.6em;
+    }
+
+    .stats-bar {
+        padding: 12px;
+    }
+
+    .location-name {
+        font-size: 1.3em;
+    }
+
+    .story-text {
+        padding: 15px;
+        font-size: 0.9em;
+    }
+
+    .action-btn {
+        font-size: 0.85em;
+        padding: 10px 12px;
+    }
+
+    .map {
+        height: 250px;
+    }
+
+    .map-location {
+        width: 20px;
+        height: 20px;
+        font-size: 0.6em;
+    }
+
+    .timer-bar {
+        width: 240px;
+    }
+
+    #startBtn {
+        font-size: 1.3em;
+        padding: 10px 20px;
+    }
+}
 </style>
 </head>
 <body>
