@@ -56,7 +56,7 @@ body {
 .title {
     grid-area: title;
     text-align: center;
-    font-size: 2.5em;
+    font-size: 1.5em;
     color: #e74c3c;
     margin-bottom: 0;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -128,7 +128,7 @@ body {
 }
 
 .location-name {
-    font-size: 1.8em;
+    font-size: 1.1em;
     color: #e74c3c;
     margin-bottom: 15px;
     font-weight: bold;
@@ -707,9 +707,10 @@ a:hover {
             </div>
             <div id="thirst-text">100/100</div>
         </div>
-        <div class="stat">
-            <div id="score-text">0</div>
-        </div>
+    </div>
+    <div class="stat" style="text-align:center;">
+        <div id="score-text">0</div>
+        <br />
     </div>
     <div class="game-container">
         
@@ -1401,7 +1402,7 @@ a:hover {
                     this.startAction(`Equipping ${this.weapons[weaponId].name}...`, () => {
                         this.player.score += 50;
                         this.player.equippedWeapon = weaponId;
-                        this.updateStory(`You equipped the ${this.weapons[weaponId].name}.`);
+                        this.updateStory(`You equipped ${this.weapons[weaponId].name}.`);
                         this.updateDisplay();
                         this.generateActions();
                     });
@@ -1469,7 +1470,7 @@ a:hover {
                 document.getElementById('hunger-text').textContent = `${this.player.hunger}/100`;
                 document.getElementById('thirst-text').textContent = `${this.player.thirst}/100`;
                 
-                document.getElementById('score-text').textContent = `${this.player.score}pts`;
+                document.getElementById('score-text').textContent = `Score: ${this.player.score}pts`;
                 
                 const loc = this.locations[this.player.location];
                 document.getElementById('location-name').textContent = "Location: " + loc.name;
@@ -1486,7 +1487,7 @@ a:hover {
                 
                 const inventoryEl = document.getElementById('inventory-items');
                 if (this.player.inventory.length === 0) {
-                    inventoryEl.innerHTML = '<div class="inventory-item">Empty Hands</div>';
+                    inventoryEl.innerHTML = '<div class="inventory-item">Fists</div>';
                 } else {
                     inventoryEl.innerHTML = this.player.inventory.map(item => 
                         `<div class="inventory-item" onclick="game.useItem('${item}')" style="cursor: pointer;">${this.formatItemName(item)}${this.player.equippedWeapon === item ? ' (Equipped)' : ''}</div>`
@@ -2097,7 +2098,7 @@ a:hover {
                 if (this.player.health <= 0) {
                     this.gameRunning = false;
                     document.getElementById('story-text').innerHTML = 
-                        '<div class="game-over">You Died<br><span style="color:orange;">SCORE: ' + this.player.score + 'pts</span></div>';
+                        '<div class="game-over">You Died<br><span style="color:orange;">Score: ' + this.player.score + 'pts</span></div>';
                     var score = 0;
                     setInterval(function() { 
                       document.getElementById('action-buttons').remove();
