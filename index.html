@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DayZ Text Adventure</title>
     <style>
@@ -9,6 +10,14 @@
           margin: 0;
           padding: 0;
           box-sizing: border-box;
+      }
+      .material-symbols-outlined {
+        font-family: 'Material Symbols Outlined';
+        font-variation-settings:
+          'FILL' 0,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24;
       }
       html, body {
           height: 100%;
@@ -571,13 +580,18 @@
         <br /><br />
         <p style="text-align: left; width: 80%; margin-left: 10%;">
           <strong>Notes:</strong><br />
-          - You lose hunger/thrist slowly over time. Actions cause depletion.<br />
+          - Your hunger &amp; thirst depletes 1 unit every 4 in-game ticks.<br />
+          - Performing actions causes depletion (except eating/drinking).<br />
+          - Travelling to a new location uses more food/drink.<br />
           - Chance of being infected from zombie, requires antibiotics.<br />
-          - Decrease infection chance &amp; increase damage with a weapon.<br />
+          - Decrease infection chance &amp; increase damage by equipping a weapon.<br />
           - To drop a weapon, click it in your inventory.<br />
+          - To equip a weapon, click the weapons' equip button.<br />
           - Your score increases as you do actions and survive.<br />
-          - Refresh to start again.
+          - Refresh to start again.<br />
         </p>
+        <br /><br />
+        <p>By Barrie</p>
         <button id="startBtn">Start Game</button>
     </div>
     <div class="game-container">
@@ -604,12 +618,13 @@
                 <div id="score-text">0</div>
             </div>
         </div>
+        
         <div class="tooltip" id="tooltip"></div>
         
         <div class="location-info">
             <div class="location-name" id="location-name">Elektrozavodsk</div>
             <div id="location-description">You find yourself in the coastal city of Elektro. The sound of waves crashes nearby, but the empty streets tell a different story.</div>
-            <div class="actions" id="action-buttons">
+            <div class="actions" id="action-buttons"></div>
         </div>
         
         <div class="story-text" id="story-text">
@@ -725,9 +740,11 @@
                 };
 
                 this.weapons = {
+                    brassKnuckles: { name: 'Brass Knuckles', damage: 10 },
                     knife: { name: 'Knife', damage: 20 },
-                    pistol: { name: 'Pistol', damage: 30 },
-                    rifle: { name: 'Rifle', damage: 50 }
+                    pistol: { name: 'P1 Pistol', damage: 30 },
+                    glock: { name: 'Glock Pistol', damage: 35 },
+                    mosinRifle: { name: 'Mosin Rifle', damage: 50 }
                 };
                 
                 this.locations = {
@@ -758,7 +775,7 @@
                             soda_can: 0.1,
                             bandage: 0.1,
                             knife: 0.05,
-                            tools: 0.05
+                            junk: 0.05
                         },
                         zombieChance: 0.3
                     },
@@ -773,6 +790,7 @@
                             pistol: 0.12,
                             rifle: 0.08,
                             knife: 0.1,
+                            mosinRifle: 0.1,
                             backpack: 0.1,
                             antibiotics: 0.1
                         },
@@ -789,6 +807,7 @@
                             pistol: 0.1,
                             rifle: 0.15,
                             knife: 0.1,
+                            mosinRifle: 0.1,
                             backpack: 0.05
                         },
                         zombieChance: 0.6
@@ -805,7 +824,7 @@
                             medical_supplies: 0.15,
                             pistol: 0.1,
                             rifle: 0.1,
-                            tools: 0.1,
+                            junk: 0.1,
                             backpack: 0.05
                         },
                         zombieChance: 0.45
@@ -821,7 +840,7 @@
                             energy_drink: 0.1,
                             medical_supplies: 0.1,
                             pistol: 0.12,
-                            tools: 0.08,
+                            junk: 0.08,
                             backpack: 0.1
                         },
                         zombieChance: 0.4
@@ -839,7 +858,7 @@
                             medical_supplies: 0.1,
                             pistol: 0.1,
                             knife: 0.1,
-                            tools: 0.1,
+                            junk: 0.1,
                             backpack: 0.05
                         },
                         zombieChance: 0.35
@@ -852,7 +871,7 @@
                             canned_food: 0.15,
                             protein_bar: 0.1,
                             water_bottle: 0.15,
-                            tools: 0.2,
+                            junk: 0.2,
                             bandage: 0.1,
                             knife: 0.1,
                             energy_drink: 0.1
@@ -864,7 +883,7 @@
                     rify: {
                         name: 'Rify',
                         description: 'A small coastal village with fishing boats. The sea breeze carries an eerie silence.',
-                        connections: ['berezino', 'svetlojarsk'],
+                        connections: ['berezino', 'svetlojarsk', 'solnichniy'],
                         lootTable: {
                             canned_food: 0.2,
                             fresh_fruit: 0.15,
@@ -888,7 +907,7 @@
                             medical_supplies: 0.15,
                             pistol: 0.1,
                             rifle: 0.1,
-                            tools: 0.1,
+                            junk: 0.1,
                             bandage: 0.15
                         },
                         zombieChance: 0.5
@@ -904,7 +923,7 @@
                             soda_can: 0.15,
                             bandage: 0.15,
                             knife: 0.1,
-                            tools: 0.05
+                            junk: 0.05
                         },
                         zombieChance: 0.25
                     },
@@ -930,7 +949,7 @@
                             canned_food: 0.2,
                             fresh_fruit: 0.25,
                             water_bottle: 0.2,
-                            tools: 0.15,
+                            junk: 0.15,
                             knife: 0.1,
                             bandage: 0.1
                         },
@@ -976,7 +995,8 @@
                             medical_supplies: 0.15,
                             pistol: 0.1,
                             rifle: 0.1,
-                            tools: 0.15,
+                            mosinRifle: 0.05,
+                            junk: 0.15,
                             backpack: 0.05
                         },
                         zombieChance: 0.45
@@ -1016,12 +1036,13 @@
                         description: 'A coastal city with industrial buildings and residential areas. The sound of waves can be heard nearby.',
                         connections: ['cherno', 'prigorodki', 'kamyshovo', 'staroye', 'mogilevka'],
                         lootTable: {
+                            brassKnuckles: 0.15,
                             canned_food: 0.25,
                             protein_bar: 0.15,
                             water_bottle: 0.2,
                             soda_can: 0.15,
                             bandage: 0.1,
-                            tools: 0.05,
+                            junk: 0.05,
                             knife: 0.05,
                             pistol: 0.05
                         },
@@ -1062,13 +1083,13 @@
                     solnichniy: {
                         name: 'Solnichniy Factory',
                         description: 'An industrial area with large factory buildings. Good for finding tools and supplies.',
-                        connections: ['kamyshovo', 'berezino', 'svetlojarsk', 'polana', 'tulga'],
+                        connections: ['kamyshovo', 'berezino', 'svetlojarsk', 'polana', 'tulga', 'rify'],
                         lootTable: {
                             canned_food: 0.15,
                             protein_bar: 0.15,
                             water_bottle: 0.15,
                             energy_drink: 0.1,
-                            tools: 0.2,
+                            junk: 0.2,
                             bandage: 0.1,
                             knife: 0.1,
                             pistol: 0.05
@@ -1081,6 +1102,7 @@
                         connections: ['solnichniy', 'svetlojarsk', 'novodmitrovsk', 'polana', 'gorka', 'rify', 'krasnostav'],
                         lootTable: {
                             canned_food: 0.15,
+                            brassKnuckles: 0.15,
                             protein_bar: 0.1,
                             water_bottle: 0.15,
                             soda_can: 0.1,
@@ -1103,7 +1125,8 @@
                             bandage: 0.1,
                             pistol: 0.1,
                             rifle: 0.1,
-                            backpack: 0.1
+                            backpack: 0.1,
+                            mosinRifle: 0.05
                         },
                         zombieChance: 0.6
                     },
@@ -1116,7 +1139,7 @@
                             protein_bar: 0.15,
                             water_bottle: 0.15,
                             energy_drink: 0.1,
-                            tools: 0.2,
+                            junk: 0.2,
                             medical_supplies: 0.1,
                             pistol: 0.1,
                             backpack: 0.05
@@ -1192,7 +1215,7 @@
                             water_bottle: 0.2,
                             soda_can: 0.15,
                             bandage: 0.15,
-                            tools: 0.05,
+                            junk: 0.05,
                             knife: 0.05
                         },
                         zombieChance: 0.25
@@ -1224,7 +1247,7 @@
                             bandage: 0.1,
                             pistol: 0.1,
                             rifle: 0.1,
-                            tools: 0.05
+                            junk: 0.05
                         },
                         zombieChance: 0.55
                     },
@@ -1252,7 +1275,7 @@
                             water_bottle: 0.15,
                             energy_drink: 0.1,
                             medical_supplies: 0.2,
-                            tools: 0.1,
+                            junk: 0.1,
                             bandage: 0.1,
                             pistol: 0.1,
                             backpack: 0.05
@@ -1313,7 +1336,7 @@
                 document.getElementById("start").remove();
                 this.updateDisplay();
                 this.generateActions();
-                setInterval(() => this.tick(), 3000); // Tick every 3 seconds
+                setInterval(() => this.tick(), 3000);
                 this.setupTooltips();
             }
 
@@ -1424,7 +1447,7 @@
                         line.setAttribute('y1', y1);
                         line.setAttribute('x2', x2);
                         line.setAttribute('y2', y2);
-                        line.setAttribute('stroke', '#34495e');
+                        line.setAttribute('stroke', '#ab4cde');
                         line.setAttribute('stroke-width', '2');
                         svg.appendChild(line);
                     }
@@ -1498,7 +1521,7 @@
                     medical_supplies: 'Medical Supplies',
                     antibiotics: 'Antibiotics',
                     fishing_rod: 'Fishing Rod',
-                    tools: 'Tools',
+                    junk: 'Junk',
                     backpack: 'Backpack'
                 };
                 if (this.weapons[item]) {
