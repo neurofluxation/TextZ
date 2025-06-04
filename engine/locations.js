@@ -1,3 +1,23 @@
+//ITEM NAMES ARE:
+/*
+canned_food
+protein_bar
+fresh_fruit
+military_rations
+water_bottle
+soda_can
+energy_drink
+bandage
+medical_supplies
+antibiotics
+fishing_rod
+junk
+backpack
+glock
+knife
+rifle
+pistol
+*/
 var LOCATIONS = {
   // Northwest Region
   lopatino: {
