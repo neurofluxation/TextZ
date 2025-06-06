@@ -11,10 +11,10 @@ var CONFIG = {
     
     //DAMAGE
     base_damage: 10, //damage with fists as points of damage
-    zombie_damage: 20, //damage from zombies
-    infection_chance: 0.15, //the change of infection (0.15 = 15%)
-    zombie_chance: 0.5, //the chance of being attacked when travelling (0.5 = 50%)
-    encounter_chance: 0.25, //the chance of an encounter happening when travelling (0.25 = 25%)
+    zombie_damage: 15, //damage from zombies
+    infection_chance: 0.08, //the change of infection (0.15 = 15%)
+    zombie_chance: 0.4, //the chance of being attacked when travelling (0.5 = 50%)
+    encounter_chance: 0.15, //the chance of an encounter happening when travelling (0.25 = 25%)
     //TIMINGS & TICKS
     action_duration: 3000, //how long an action takes in ms (3000 = 3 sec)
     tick_time: 3000, //how fast the game progresses in ms (3000 = 3 sec)
@@ -25,9 +25,10 @@ var CONFIG = {
     hunger_depletion: 1, //how much hunger is reduced by every tick
     thirst_depletion: 2, //how much thirst is reduced by every tick
     health_depletion: 1, //how much health is reduced by if no hunger/thirst every tick
-    hunger_min: 10, //the level of hunger before your health is affected 
-    thirst_min: 10, //the level of thirst before your health is affected
+    hunger_min: 5, //the level of hunger before your health is affected 
+    thirst_min: 5, //the level of thirst before your health is affected
     action_damage: 5, //how much your health decreases when infected and doing an action
-    travel_hunger: 15, //how much hunger is removed when travelling
-    travel_thirst: 15, //how much thirst is removed when travelling
+    travel_hunger: 10, //how much hunger is removed when travelling
+    travel_thirst: 10, //how much thirst is removed when travelling
+    
 }

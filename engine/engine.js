@@ -15,7 +15,8 @@ class Game {
             baseDamage: CONFIG.base_damage,
             infection: false,         // Tracks infection status
             inventoryCapacity: CONFIG.starting_carry_space,     // Default capacity,
-            score: 0
+            junk: 0,
+            score: 0,
         };
 
         this.weapons = WEAPONS;
@@ -722,6 +723,11 @@ class Game {
                         this.player.inventoryCapacity = 12; // Increase from 8
                         this.updateStory('You equipped a backpack, increasing your inventory capacity.');
                         this.player.score += 15;
+                        break;
+                    case 'junk':
+                        this.updateStory('You have played with your junk ' + (this.player.junk + 1) + ' times!');
+                        this.player.score += 10;
+                        this.player.junk++;
                         break;
                     }
                 this.updateStatus();

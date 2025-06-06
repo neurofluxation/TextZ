@@ -182,7 +182,8 @@ var LOCATIONS = {
           rifle: 0.1,
           junk: 0.1,
           bandage: 0.15,
-          glock: 0.05
+          glock: 0.05,
+          antibiotics: 0.1
       },
       zombieChance: 0.5
   },
