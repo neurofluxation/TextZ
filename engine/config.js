@@ -12,9 +12,9 @@ var CONFIG = {
     //DAMAGE
     base_damage: 10, //damage with fists as points of damage
     zombie_damage: 15, //damage from zombies
-    infection_chance: 0.08, //the change of infection (0.15 = 15%)
-    zombie_chance: 0.4, //the chance of being attacked when travelling (0.5 = 50%)
-    encounter_chance: 0.15, //the chance of an encounter happening when travelling (0.25 = 25%)
+    infection_chance: 0.12, //the change of infection (0.15 = 15%)
+    zombie_chance: 0.5, //the chance of being attacked when travelling (0.5 = 50%)
+    encounter_chance: 0.2, //the chance of an encounter happening when travelling (0.25 = 25%)
     interactTime: 1250, //the time you have to interact with the dodge/attack button
     
     //TIMINGS & TICKS
@@ -30,7 +30,7 @@ var CONFIG = {
     hunger_min: 5, //the level of hunger before your health is affected 
     thirst_min: 5, //the level of thirst before your health is affected
     action_damage: 5, //how much your health decreases when infected and doing an action
-    travel_hunger: 10, //how much hunger is removed when travelling
-    travel_thirst: 10, //how much thirst is removed when travelling
+    travel_hunger: 15, //how much hunger is removed when travelling
+    travel_thirst: 18, //how much thirst is removed when travelling
     
 }
