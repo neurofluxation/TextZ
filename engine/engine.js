@@ -666,6 +666,11 @@ class Game {
             if (index !== -1) {
                 this.player.inventory.splice(index, 1);
                 switch (item) {
+                    case 'fishing_rod':
+                        this.player.hunger = Math.min(100, this.player.hunger + 100);
+                        this.updateStory('You caught some fish and feel full!');
+                        this.player.score += 10;
+                      break;
                     case 'canned_food':
                         this.player.hunger = Math.min(100, this.player.hunger + 40);
                         this.updateStory('You ate some canned food, feeling less hungry.');
