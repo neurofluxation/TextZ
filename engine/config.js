@@ -15,6 +15,8 @@ var CONFIG = {
     infection_chance: 0.08, //the change of infection (0.15 = 15%)
     zombie_chance: 0.4, //the chance of being attacked when travelling (0.5 = 50%)
     encounter_chance: 0.15, //the chance of an encounter happening when travelling (0.25 = 25%)
+    interactTime: 1250, //the time you have to interact with the dodge/attack button
+    
     //TIMINGS & TICKS
     action_duration: 3000, //how long an action takes in ms (3000 = 3 sec)
     tick_time: 3000, //how fast the game progresses in ms (3000 = 3 sec)

@@ -474,6 +474,51 @@ a:hover {
     box-shadow: 0 5px 15px rgba(231, 126, 34, 0.4);
 }
 
+.qte-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px 40px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1000;
+    border: 2px solid #fff;
+    border-radius: 5px;
+    background-color: #ff4444;
+    color: #fff;
+    transition: background-color 0.2s;
+}
+
+.qte-btn:hover {
+    background-color: #ff6666 !important;
+}
+
+.shake {
+    animation: shake 0.2s ease-in-out infinite;
+}
+
+@keyframes shake {
+    0% { transform: translate(-50%, -50%) translateX(0); }
+    25% { transform: translate(-50%, -50%) translateX(-5px); }
+    50% { transform: translate(-50%, -50%) translateX(5px); }
+    75% { transform: translate(-50%, -50%) translateX(-5px); }
+    100% { transform: translate(-50%, -50%) translateX(0); }
+}
+
+.success {
+    color: #00ff00;
+}
+
+.warning {
+    color: #ffcc00;
+}
+
+.danger {
+    color: #ff4444;
+}
+
 /* Custom scrollbar */
 *::-webkit-scrollbar {
     width: 8px;

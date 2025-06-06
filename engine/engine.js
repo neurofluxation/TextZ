@@ -217,21 +217,7 @@ class Game {
             this.updateStory(`You have arrived at ${this.locations[destination].name}.`);
 
             if (Math.random() < CONFIG.zombie_chance) {
-                const damage = this.player.equippedWeapon ? this.weapons[this.player.equippedWeapon].damage : this.player.baseDamage;
-                this.updateStory(`<span class="danger">You were ambushed by a zombie on the way!</span> You fight back, dealing ${damage} damage.`);
-                this.player.health = Math.max(0, this.player.health - CONFIG.zombie_damage);
-
-                if (Math.random() < CONFIG.infection_chance && !this.player.infection) { // 20% chance to get infected
-                    this.player.infection = true;
-                    this.updateStory('<span class="danger">The zombie’s bite infects you! Find antibiotics!</span>');
-                }
-
-                if (damage < 50) {
-                    this.updateStory('The zombie survives your attack and injures you.');
-                } else {
-                    this.updateStory('You defeated the zombie!');
-                    this.player.score += 25;
-                }
+                this.zombieEncounter();
             }
 
             this.player.hunger = Math.max(0, this.player.hunger - CONFIG.travel_hunger);
@@ -384,11 +370,7 @@ class Game {
         timerText.textContent = `${actionText} ${countdown}s`;
         timerContainer.style.display = 'flex';
         timerFill.style.width = '100%'; // Ensure initial width
-        
-        // Force reflow to register initial state
-        timerFill.offsetWidth; // Trigger reflow
-        
-        // Start animation
+        timerFill.offsetWidth; // Force reflow to trigger animation
         timerFill.style.transition = `width ${this.actionDuration}ms linear`;
         timerFill.style.width = '0%';
         
@@ -404,8 +386,8 @@ class Game {
         // Complete action after duration
         setTimeout(() => {
             timerContainer.style.display = 'none';
-            timerFill.style.transition = 'none'; // Reset transition
-            timerFill.style.width = '100%'; // Reset width
+            timerFill.style.transition = 'none';
+            timerFill.style.width = '100%';
             this.actionInProgress = false;
             callback();
         }, this.actionDuration);
@@ -424,19 +406,7 @@ class Game {
                 this.updateStory('You searched but found nothing useful.');
             }
             if (Math.random() < loc.zombieChance) {
-                const damage = this.player.equippedWeapon ? this.weapons[this.player.equippedWeapon].damage : this.player.baseDamage;
-                this.updateStory(`<span class="danger">A zombie appears and attacks!</span> You fight back, dealing ${damage} damage.`);
-                this.player.health = Math.max(0, this.player.health - 30);
-                if (Math.random() < 0.2 && !this.player.infection) { // 20% chance to get infected
-                    this.player.infection = true;
-                    this.updateStory('<span class="danger">The zombie’s bite infects you! Find antibiotics!</span>');
-                }
-                if (damage < 50) {
-                    this.updateStory('The zombie survives your attack and injures you.');
-                } else {
-                    this.updateStory('You defeated the zombie!');
-                    this.player.score += 25;
-                }
+                this.zombieEncounter();
             }
             this.updateStatus();
             this.updateDisplay();
@@ -446,54 +416,106 @@ class Game {
 
     zombieEncounter() {
         if (this.actionInProgress) {
-            document.getElementById('story-text').textContent = "You are already performing an action. Please wait.";
+            this.updateStory("You are already performing an action. Please wait.");
             return;
         }
 
-        const storyEl = document.getElementById('story-text');
-
-        // Start action
         this.actionInProgress = true;
         this.disableInteractions();
 
-        // Show timer
+        const storyEl = document.getElementById('story-text');
         const timerContainer = document.getElementById('timer-container');
         const timerFill = document.getElementById('timer-fill');
         const timerText = document.getElementById('timer-text');
         let countdown = Math.ceil(this.actionDuration / 1000);
-        timerText.textContent = `Fighting zombie... ${countdown}`;
+        
+        // Create QTE button
+        const qteButton = document.createElement('button');
+        qteButton.className = 'action-btn qte-btn';
+        qteButton.textContent = 'Dodge/Attack!';
+        qteButton.style.display = 'block';
+        qteButton.style.top = Math.floor(Math.random() * 70) + 'vh';
+        let qteSuccess = false;
+
+        // Append QTE button to timer-container instead of action-buttons
+        timerContainer.appendChild(qteButton);
+
+        // Show timer
+        timerText.textContent = `Fighting zombie... ${countdown}s`;
         timerContainer.style.display = 'flex';
+        timerFill.style.width = '100%';
+        timerFill.offsetWidth;
         timerFill.style.transition = `width ${this.actionDuration}ms linear`;
         timerFill.style.width = '0%';
 
-        // Countdown text
+        // Countdown text and dynamic story updates
+        this.updateStory('<span class="danger">A zombie lunges at you!</span> React quickly!');
         const countdownInterval = setInterval(() => {
             countdown--;
             if (countdown > 0) {
-                timerText.textContent = `Fighting zombie... ${countdown}`;
+                timerText.textContent = `Fighting zombie... ${countdown}s`;
             }
         }, 1000);
+
+        // QTE event listener
+        const qteHandler = () => {
+            qteSuccess = true;
+            this.updateStory('<span class="success">Swift move! You dodged and struck back!</span>');
+            qteButton.remove();
+        };
+        qteButton.addEventListener('click', qteHandler);
+
+        // Shake effect for QTE button
+        qteButton.classList.add('shake');
+        const qteDuration = CONFIG.interactTime;
+        setTimeout(() => {
+            qteButton.classList.remove('shake');
+            qteButton.remove();
+            qteButton.removeEventListener('click', qteHandler);
+            if (!qteSuccess) {
+                this.updateStory('<span class="warning">Too slow! The zombie lands a hit!</span>');
+            }
+        }, qteDuration);
 
         setTimeout(() => {
             clearInterval(countdownInterval);
             let damage = 0;
+            let playerDamage = this.player.equippedWeapon ? this.weapons[this.player.equippedWeapon].damage : this.player.baseDamage;
             const encounterType = Math.random();
+
             if (encounterType < 0.3) {
-                // 30% chance for multiple zombies
-                const zombieCount = Math.floor(Math.random() * 2) + 2; // 2-3 zombies
-                damage = Math.floor(Math.random() * 20 + 15) * zombieCount; // 15-35 damage per zombie
+                const zombieCount = Math.floor(Math.random() * 2) + 2;
+                damage = Math.floor(Math.random() * 20 + 15) * zombieCount;
+                if (qteSuccess) {
+                    damage = Math.floor(damage * 0.5);
+                    playerDamage *= 1.5;
+                }
                 this.player.health = Math.max(0, this.player.health - damage);
-                storyEl.innerHTML = `<span class="danger">A group of ${zombieCount} zombies ambushes you!</span> You fight them off but take ${damage} damage. Your heart pounds as you catch your breath.`;
-                this.player.score += 20;
+                this.updateStory(`<span class="danger">A group of ${zombieCount} zombies ambushed you!</span> You dealt ${playerDamage} damage and took ${damage} damage.`);
+                this.player.score += qteSuccess ? 40 : 20;
             } else {
-                // 70% chance for single zombie
-                damage = Math.floor(Math.random() * 40) + 15; // 15-55 damage (increased from 10-40)
+                damage = Math.floor(Math.random() * 40) + 15;
+                if (qteSuccess) {
+                    damage = Math.floor(damage * 0.5);
+                    playerDamage *= 1.5;
+                }
                 this.player.health = Math.max(0, this.player.health - damage);
-                storyEl.innerHTML = `<span class="danger">A zombie shambles out from the shadows!</span> You fight it off but take ${damage} damage. Your heart pounds as you catch your breath.`;
-                this.player.score += 20;
+                this.updateStory(`<span class="danger">A zombie shambled from the shadows!</span> You dealt ${playerDamage} damage and took ${damage} damage.`);
+                this.player.score += qteSuccess ? 30 : 20;
             }
 
-            // Reset action state
+            if (Math.random() < CONFIG.infection_chance && !this.player.infection) {
+                this.player.infection = true;
+                this.updateStory('<span class="danger">The zombie’s bite infects you! Find antibiotics!</span>');
+            }
+
+            if (playerDamage >= 50) {
+                this.updateStory('You defeated the zombie!');
+                this.player.score += qteSuccess ? 50 : 25;
+            } else {
+                this.updateStory('The zombie survives your attack and injures you.');
+            }
+
             this.actionInProgress = false;
             timerContainer.style.display = 'none';
             timerFill.style.transition = 'none';
