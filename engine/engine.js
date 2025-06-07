@@ -444,7 +444,27 @@ class Game {
         const allowedConnections = this.locations[currentLocation].connections;
 
         if (!allowedConnections.includes(destination)) {
-            this.updateStory(`<span class="warning">You cannot travel directly from ${this.locations[currentLocation].name} to ${this.locations[destination].name}.</span>`);
+            var sure = confirm("Travelling this distance will deplete your hunger & thirst!\r\nAre you sure?");
+            if (sure) {
+              this.startAction(`Traveling to ${this.locations[destination].name}...`, () => {
+                  this.player.location = destination;
+                  this.updateStory(`You have arrived at ${this.locations[destination].name}.`);
+
+                  const encounterChance = Math.random();
+                  if (encounterChance < CONFIG.zombie_chance) {
+                      this.zombieEncounter();
+                  } else if (encounterChance < CONFIG.zombie_chance + CONFIG.survivor_chance) {
+                      this.survivorEncounter();
+                  }
+
+                  this.player.hunger = 0;
+                  this.player.thirst = 0;
+                  this.updateStatus();
+                  this.updateDisplay();
+                  this.generateActions();
+              });
+            }
+            //this.updateStory(`<span class="warning">You cannot travel directly from ${this.locations[currentLocation].name} to ${this.locations[destination].name}.</span>`);
             return;
         }
 
