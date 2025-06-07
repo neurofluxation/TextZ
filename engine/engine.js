@@ -34,6 +34,20 @@ class Game {
         this.actionDuration = CONFIG.action_duration; // Action duration in milliseconds (3 seconds)
         //this.init();
         self = this;
+        
+        var scores = [];
+        if (localStorage.getItem("TextZ_HiScores")) {
+          scores = JSON.parse(localStorage.getItem("TextZ_HiScores"));
+          scores.sort((a, b) => b - a);
+          var compositeHTML = "";
+          for (var a = 0; a < scores.length; a++) {
+            compositeHTML += "<li>" + scores[a] + "pts</li>";
+          }
+          document.getElementById("scores").innerHTML = compositeHTML;
+        } else {
+          document.getElementById("scores").innerHTML = "No scores yet...";
+        }
+        
         document.getElementById("startBtn").addEventListener("click", function(e) {
             e.preventDefault();
             self.init();
@@ -1004,6 +1018,16 @@ class Game {
             const deathMessage = deathMessages[this.player.deathReason] || 'You died under mysterious circumstances!';
             document.getElementById('story-text').innerHTML = 
                 `<div class="game-over">Game Over<br>${deathMessage}<br><span style="color:orange;">Score: ${this.player.score}pts</span></div>`;
+               
+            var scores = [];
+            if (localStorage.getItem("TextZ_HiScores")) {
+              scores = JSON.parse(localStorage.getItem("TextZ_HiScores"));
+              scores.push(this.player.score);
+            } else {
+              scores.push(this.player.score);
+            }
+            localStorage.setItem("TextZ_HiScores", JSON.stringify(scores));
+                
             setTimeout(() => {
                 document.getElementById('action-buttons').remove();
                 document.getElementById('map').remove();

@@ -358,6 +358,7 @@ var LOCATIONS = {
           medical_supplies: 0.1,
           pistol: 0.08,
           knife: 0.02,
+          m4a1: 0.02,
           leadpipe: 0.05,
           glock: 0.05
       },

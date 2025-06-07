@@ -12,24 +12,13 @@
         <br /><br />
         <h1 style="font-size:6em; color: red; text-shadow: 0px 0px 12px red;">TextZ</h1>
         <br /><br />
-        <p>A super simple singleplayer text-adventure version of DayZ.</p>
+        <p>A super simple singleplayer text-adventure version of DayZ.<br /><br />By Barrie</p>
         <br /><br />
-        <p style="text-align: left; width: 80%; margin-left: 10%;">
-          <strong>Notes:</strong><br />
-          - You may encounter friendly and not-so-friendly survivors.<br />
-          - Be sure to play with your junk.<br />
-          - Your hunger &amp; thirst depletes 1 unit every 4 in-game ticks.<br />
-          - Performing actions causes depletion (except eating/drinking).<br />
-          - Travelling to a new location uses more food/drink.<br />
-          - Chance of being infected from zombie, requires antibiotics.<br />
-          - Decrease infection chance &amp; increase damage by equipping a weapon.<br />
-          - To drop a weapon, click it in your inventory.<br />
-          - To equip a weapon, click the weapons' equip button.<br />
-          - Your score increases as you do actions and survive.<br />
-          - Refresh to start again.<br />
+        <p style="text-align: center; width: 100%; margin-left: 0%;">
+          <strong style="font-size:1.5em;">Hi-Scores</strong><br />
+          <ol id="scores"></ol>
         </p>
         <br /><br />
-        <p>By Barrie</p>
         <button id="startBtn">Start Game</button>
     </div>
     
@@ -73,7 +62,7 @@
         
         <div class="inventory">
             <div id="name" style="color:yellow;width:100%;margin-bottom:0.5em;font-size:1.5em;"></div>
-            <div style="margin-bottom:0.5em;"><span style="color:orange;">Note:</span> Clicking WEAPONS will DISCARD them &amp; Clicking NON-WEAPONS will use them. Equip above.</sup></div>
+            <div style="margin-bottom:0.5em;"><span style="color:orange;">Note:</span> Clicking WEAPONS will DISCARD them &amp; Clicking other items will use them. Equip weapons above.</sup></div>
             <div class="inventory-items" id="inventory-items">
                 <div class="inventory-item">Empty Hands</div>
             </div>
