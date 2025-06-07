@@ -17,6 +17,7 @@ class Game {
             inventoryCapacity: CONFIG.starting_carry_space,     // Default capacity,
             junk: 0,
             score: 0,
+            deathReason: null,
         };
 
         this.weapons = WEAPONS;
@@ -92,6 +93,9 @@ class Game {
         // Health effects from hunger/thirst
         if (this.player.hunger <= CONFIG.hunger_min || this.player.thirst <= CONFIG.thirst_min) {
             this.player.health = Math.max(0, this.player.health - CONFIG.health_depletion);
+            if (this.player.health <= 0) {
+                this.player.deathReason = this.player.hunger <= CONFIG.hunger_min ? 'starvation' : 'thirst';
+            }
         }
         
         this.player.score += CONFIG.score_per_tick;
@@ -194,9 +198,10 @@ class Game {
 
     updateStatus() {
         if (this.player.infection) {
-            this.player.health = Math.max(0, this.player.health - CONFIG.action_damage); // 5 damage per action
+            this.player.health = Math.max(0, this.player.health - CONFIG.action_damage);
             this.updateStory('<span class="danger">Your infection worsens, draining your health!</span>');
             if (this.player.health <= 0) {
+                this.player.deathReason = 'infection';
                 this.checkGameOver();
             }
         }
@@ -314,7 +319,9 @@ class Game {
                     const lostItem = this.player.inventory.splice(Math.floor(Math.random() * this.player.inventory.length), 1)[0];
                     this.updateStory(`<span class="warning">The survivor stole your ${this.formatItemName(lostItem)}!</span>`);
                 }
-
+                if (this.player.health <= 0) {
+                    this.player.deathReason = 'survivor';
+                }
                 this.actionInProgress = false;
                 timerContainer.style.display = 'none';
                 timerFill.style.transition = 'none';
@@ -724,7 +731,9 @@ class Game {
             } else {
                 this.updateStory('The zombie survives your attack and injures you.');
             }
-
+            if (this.player.health <= 0) {
+                this.player.deathReason = 'zombie';
+            }
             this.actionInProgress = false;
             timerContainer.style.display = 'none';
             timerFill.style.transition = 'none';
@@ -974,15 +983,22 @@ class Game {
     }
 
     checkGameOver() {
-        if (this.player.health <= 0) {
+        if (this.player.health <= 0 && this.gameRunning) {
             this.gameRunning = false;
+            const deathMessages = {
+                zombie: 'You were torn apart by zombies!',
+                survivor: 'A hostile survivor overwhelmed you!',
+                starvation: 'You succumbed to starvation!',
+                thirst: 'You died of dehydration!',
+                infection: 'The infection consumed you!'
+            };
+            const deathMessage = deathMessages[this.player.deathReason] || 'You died under mysterious circumstances!';
             document.getElementById('story-text').innerHTML = 
-                '<div class="game-over">You Died<br><span style="color:orange;">Score: ' + this.player.score + 'pts</span></div>';
-            var score = 0;
-            setInterval(function() { 
-              document.getElementById('action-buttons').remove();
-              document.getElementById('map').remove();
-              document.getElementById('inventory-items').remove();
+                `<div class="game-over">Game Over<br>${deathMessage}<br><span style="color:orange;">Score: ${this.player.score}pts</span></div>`;
+            setTimeout(() => {
+                document.getElementById('action-buttons').remove();
+                document.getElementById('map').remove();
+                document.getElementById('inventory-items').remove();
             }, 10);
         }
     }
