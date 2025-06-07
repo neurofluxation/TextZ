@@ -203,6 +203,211 @@ class Game {
         this.updateDisplay();
     }
 
+    survivorEncounter() {
+        if (this.actionInProgress) {
+            this.updateStory("You are already performing an action. Please wait.");
+            return;
+        }
+
+        this.actionInProgress = true;
+        this.disableInteractions();
+
+        const storyEl = document.getElementById('story-text');
+        const timerContainer = document.getElementById('timer-container');
+        const timerFill = document.getElementById('timer-fill');
+        const timerText = document.getElementById('timer-text');
+        let countdown = Math.ceil(this.actionDuration / 1000);
+
+        const isFriendly = Math.random() < 0.7; // 70% chance friendly, 30% hostile
+
+        if (isFriendly) {
+            this.updateStory('<span class="success">You encounter a friendly survivor!</span> They offer to trade.');
+            timerText.textContent = `Talking to survivor... ${countdown}s`;
+            timerContainer.style.display = 'flex';
+            timerFill.style.width = '100%';
+            timerFill.offsetWidth;
+            timerFill.style.transition = `width ${this.actionDuration}ms linear`;
+            timerFill.style.width = '0%';
+
+            const countdownInterval = setInterval(() => {
+                countdown--;
+                if (countdown > 0) {
+                    timerText.textContent = `Talking to survivor... ${countdown}s`;
+                }
+            }, 1000);
+
+            setTimeout(() => {
+                clearInterval(countdownInterval);
+                this.startTrade();
+                this.actionInProgress = false;
+                timerContainer.style.display = 'none';
+                timerFill.style.transition = 'none';
+                timerFill.style.width = '100%';
+                this.enableInteractions();
+                this.updateDisplay();
+                this.generateActions();
+            }, this.actionDuration);
+        } else {
+            // Hostile survivor encounter
+            let qteSuccess = false;
+            const qteButton = document.createElement('button');
+            qteButton.className = 'action-btn qte-btn';
+            qteButton.textContent = 'Defend!';
+            qteButton.style.display = 'block';
+            timerContainer.appendChild(qteButton);
+
+            timerText.textContent = `Fighting hostile survivor... ${countdown}s`;
+            timerContainer.style.display = 'flex';
+            timerFill.style.width = '100%';
+            timerFill.offsetWidth;
+            timerFill.style.transition = `width ${this.actionDuration}ms linear`;
+            timerFill.style.width = '0%';
+
+            this.updateStory('<span class="danger">A hostile survivor attacks you!</span> React quickly!');
+            const countdownInterval = setInterval(() => {
+                countdown--;
+                if (countdown > 0) {
+                    timerText.textContent = `Fighting hostile survivor... ${countdown}s`;
+                }
+            }, 1000);
+
+            const qteHandler = () => {
+                qteSuccess = true;
+                this.updateStory('<span class="success">Quick defense! You counter the attack!</span>');
+                qteButton.remove();
+            };
+            qteButton.addEventListener('click', qteHandler);
+
+            qteButton.classList.add('shake');
+            const qteDuration = 2000;
+            setTimeout(() => {
+                qteButton.classList.remove('shake');
+                qteButton.remove();
+                qteButton.removeEventListener('click', qteHandler);
+                if (!qteSuccess) {
+                    this.updateStory('<span class="warning">Too slow! The survivor lands a hit!</span>');
+                }
+            }, qteDuration);
+
+            setTimeout(() => {
+                clearInterval(countdownInterval);
+                let damage = Math.floor(Math.random() * 30) + 15; // 15-45 damage
+                let playerDamage = this.player.equippedWeapon ? this.weapons[this.player.equippedWeapon].damage : this.player.baseDamage;
+
+                if (qteSuccess) {
+                    damage = Math.floor(damage * 0.5); // Reduce damage by 50%
+                    playerDamage *= 1.5; // Increase player damage by 50%
+                }
+
+                this.player.health = Math.max(0, this.player.health - damage);
+                this.updateStory(`<span class="danger">You fought the hostile survivor!</span> You dealt ${playerDamage} damage and took ${damage} damage.`);
+
+                if (playerDamage >= 40) {
+                    this.updateStory('You defeated the hostile survivor!');
+                    this.player.score += qteSuccess ? 60 : 30;
+                } else {
+                    this.updateStory('The survivor escapes after injuring you.');
+                    this.player.score += qteSuccess ? 30 : 15;
+                }
+
+                if (Math.random() < 0.3 && this.player.inventory.length > 0) { // 30% chance to lose an item
+                    const lostItem = this.player.inventory.splice(Math.floor(Math.random() * this.player.inventory.length), 1)[0];
+                    this.updateStory(`<span class="warning">The survivor stole your ${this.formatItemName(lostItem)}!</span>`);
+                }
+
+                this.actionInProgress = false;
+                timerContainer.style.display = 'none';
+                timerFill.style.transition = 'none';
+                timerFill.style.width = '100%';
+                this.enableInteractions();
+
+                this.checkGameOver();
+                this.updateDisplay();
+                this.generateActions();
+            }, this.actionDuration);
+        }
+    }
+
+    startTrade() {
+        const tradeItems = ['canned_food', 'water_bottle', 'bandage', 'protein_bar', 'soda_can']; // Possible trade items
+        const survivorItem = tradeItems[Math.floor(Math.random() * tradeItems.length)];
+
+        // Create popup container
+        const popup = document.createElement('div');
+        popup.id = 'trade-popup';
+        popup.className = 'trade-popup';
+
+        // Create popup content
+        const popupContent = document.createElement('div');
+        popupContent.className = 'trade-popup-content';
+        popupContent.innerHTML = `
+            <h2>Trade Offer</h2>
+            <p>The survivor offers <strong>${this.formatItemName(survivorItem)}</strong>. Choose an item to trade or decline.</p>
+            <div id="trade-buttons" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;"></div>
+        `;
+
+        // Append content to popup
+        popup.appendChild(popupContent);
+        document.body.appendChild(popup);
+
+        // Create trade buttons
+        const tradeButtonContainer = popupContent.querySelector('#trade-buttons');
+        const tradeButtons = [];
+        if (this.player.inventory.length === 0) {
+            popupContent.innerHTML += '<p class="warning">You have nothing to trade!</p>';
+            tradeButtons.push({
+                text: 'Decline Trade',
+                action: 'game.declineTrade()'
+            });
+        } else {
+            this.player.inventory.forEach(item => {
+                tradeButtons.push({
+                    text: `Trade ${this.formatItemName(item)}`,
+                    action: `game.tradeItem('${item}', '${survivorItem}')`
+                });
+            });
+            tradeButtons.push({
+                text: 'Decline Trade',
+                action: 'game.declineTrade()'
+            });
+        }
+
+        tradeButtons.forEach(btn => {
+            const button = document.createElement('button');
+            button.className = 'action-btn';
+            button.textContent = btn.text;
+            button.setAttribute('onclick', btn.action);
+            tradeButtonContainer.appendChild(button);
+        });
+
+        // Disable other interactions
+        this.disableInteractions();
+    }
+
+    // Replace the tradeItem function
+    tradeItem(playerItem, survivorItem) {
+        const index = this.player.inventory.indexOf(playerItem);
+        if (index !== -1) {
+            this.player.inventory.splice(index, 1); // Remove player's item
+            this.player.inventory.push(survivorItem); // Add survivor's item
+            this.updateStory(`You traded your ${this.formatItemName(playerItem)} for a ${this.formatItemName(survivorItem)}.`);
+            this.player.score += 20;
+        }
+        document.getElementById('trade-popup').remove();
+        this.enableInteractions();
+        this.updateDisplay();
+        this.generateActions();
+    }
+
+    // Replace the declineTrade function
+    declineTrade() {
+        this.updateStory('You declined the trade and part ways with the survivor.');
+        document.getElementById('trade-popup').remove();
+        this.enableInteractions();
+        this.updateDisplay();
+        this.generateActions();
+    }
+
     mapTravel(destination) {
         const currentLocation = this.player.location;
         const allowedConnections = this.locations[currentLocation].connections;
@@ -216,8 +421,11 @@ class Game {
             this.player.location = destination;
             this.updateStory(`You have arrived at ${this.locations[destination].name}.`);
 
-            if (Math.random() < CONFIG.zombie_chance) {
+            const encounterChance = Math.random();
+            if (encounterChance < CONFIG.zombie_chance) {
                 this.zombieEncounter();
+            } else if (encounterChance < CONFIG.zombie_chance + CONFIG.survivor_chance) {
+                this.survivorEncounter();
             }
 
             this.player.hunger = Math.max(0, this.player.hunger - CONFIG.travel_hunger);
@@ -255,7 +463,7 @@ class Game {
     }
 
     generateActions() {
-        if (!this.gameRunning) return;
+        if (!this.gameRunning || document.getElementById('trade-popup')) return; // Skip if trade popup is active
         const actionsEl = document.getElementById('action-buttons');
         actionsEl.innerHTML = '';
 
@@ -267,11 +475,11 @@ class Game {
 
         // Travel actions
         loc.connections.forEach(conn => {
-            /*buttons.push({
+            buttons.push({
                 text: `Travel to ${this.locations[conn].name}`,
                 action: `game.mapTravel('${conn}')`,
                 disabled: this.actionInProgress
-            });*/
+            });
         });
 
         // Use item actions
@@ -434,7 +642,8 @@ class Game {
         qteButton.className = 'action-btn qte-btn';
         qteButton.textContent = 'Dodge/Attack!';
         qteButton.style.display = 'block';
-        qteButton.style.top = Math.floor(Math.random() * 70) + 'vh';
+        qteButton.style.top = (Math.floor(Math.random() * 70) + 10) + 'vh';
+        qteButton.style.left = (Math.floor(Math.random() * 70) + 10) + '%';
         let qteSuccess = false;
 
         // Append QTE button to timer-container instead of action-buttons

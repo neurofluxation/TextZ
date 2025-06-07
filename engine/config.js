@@ -32,5 +32,6 @@ var CONFIG = {
     action_damage: 5, //how much your health decreases when infected and doing an action
     travel_hunger: 15, //how much hunger is removed when travelling
     travel_thirst: 18, //how much thirst is removed when travelling
+    survivor_chance: 0.1, //the chance of encountering a survivor
     
 }

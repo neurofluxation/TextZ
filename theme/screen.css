@@ -499,6 +499,48 @@ a:hover {
     animation: shake 0.2s ease-in-out infinite;
 }
 
+.trade-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.85);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.trade-popup-content {
+    background: rgba(26, 37, 47, 0.9);
+    padding: 20px;
+    border-radius: 8px;
+    border: 2px solid #e74c3c;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    color: #ecf0f1;
+}
+
+.trade-popup-content h2 {
+    color: #e74c3c;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+}
+
+.trade-popup-content p {
+    margin-bottom: 20px;
+    font-size: 1em;
+    line-height: 1.4;
+}
+
+.trade-popup-content .action-btn {
+    margin: 5px;
+    padding: 10px 20px;
+    font-size: 0.9em;
+}
+
 @keyframes shake {
     0% { transform: translate(-50%, -50%) translateX(0); }
     25% { transform: translate(-50%, -50%) translateX(-5px); }
