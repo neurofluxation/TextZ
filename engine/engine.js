@@ -61,6 +61,7 @@ class Game {
                 this.player.score += 50;
                 this.player.equippedWeapon = weaponId;
                 this.updateStory(`You equipped ${this.weapons[weaponId].name}.`);
+                document.getElementById("equippedWeapon").innerHTML = this.weapons[weaponId].name + " (" + this.weapons[weaponId].damage + " dam)";
                 this.updateDisplay();
                 this.generateActions();
             });
@@ -524,7 +525,7 @@ class Game {
             // Equip weapon action
             if (this.weapons[item] && item !== this.player.equippedWeapon) {
                 buttons.push({
-                    text: `Equip ${this.weapons[item].name}`,
+                    text: `Equip ${this.weapons[item].name} (${this.weapons[item].damage} dam)`,
                     action: `game.equipWeapon('${item}')`,
                     disabled: this.actionInProgress
                 });
