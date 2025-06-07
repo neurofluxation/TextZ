@@ -140,7 +140,7 @@ class Game {
         document.getElementById('hunger-text').textContent = `${this.player.hunger}/100`;
         document.getElementById('thirst-text').textContent = `${this.player.thirst}/100`;
         
-        document.getElementById('score-text').textContent = `Score: ${this.player.score}pts`;
+        //document.getElementById('score-text').textContent = `Score: ${this.player.score}pts`;
         
         const loc = this.locations[this.player.location];
         document.getElementById('location-name').textContent = "Location: " + loc.name;
