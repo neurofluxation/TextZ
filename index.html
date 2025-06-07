@@ -64,12 +64,6 @@
         
         <div class="tooltip" id="tooltip"></div>
         
-        <div class="location-info">
-            <div class="location-name" id="location-name">Elektrozavodsk</div>
-            <div id="location-description">You find yourself in the coastal city of Elektro. The sound of waves crashes nearby, but the empty streets tell a different story.</div>
-            <div class="actions" id="action-buttons"></div>
-        </div>
-        
         <div class="story-text" id="story-text">
             You awake on the shores of Chernarus in <span id="start-location"></span>, survivor. The infection has spread, and you're one of the few left alive. Your stomach growls with hunger, your throat is dry, and you can hear the distant moans of the infected. You must survive.
             <br /><br />
@@ -78,7 +72,9 @@
         
         <div class="inventory">
             <div id="name" style="color:yellow;width:100%;margin-bottom:0.5em;font-size:1.5em;"></div>
-            <div id="equippedWeapon" style="color:yellow;width:100%;margin-bottom:0.5em;font-size:1.5em;">Fists (10 dam)</div>
+            <div id="equippedWeapon" style="color:yellow;width:100%;margin-bottom:0.5em;font-size:1.5em;">WEAPON: Fists (10 dam)</div>
+            <div class="location-name" id="location-name" style="font-weight:normal;color:yellow;width:100%;margin-bottom:0.5em;font-size:1.5em;">Elektrozavodsk</div>
+            <div id="location-description">You find yourself in the coastal city of Elektro. The sound of waves crashes nearby, but the empty streets tell a different story.</div>
             <div class="inventory-items" id="inventory-items">
                 <div class="inventory-item">Empty Hands</div>
             </div>
@@ -144,6 +140,10 @@
             </div>
         </div>
 
+        <div class="location-info">
+            <div class="actions" id="action-buttons"></div>
+        </div>
+        
         <div class="actions" id="actions">
             <!-- Actions will be populated by JavaScript -->
         </div>

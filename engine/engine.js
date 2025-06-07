@@ -65,7 +65,7 @@ class Game {
                 this.player.score += 50;
                 this.player.equippedWeapon = weaponId;
                 this.updateStory(`You equipped ${this.weapons[weaponId].name}.`);
-                document.getElementById("equippedWeapon").innerHTML = this.weapons[weaponId].name + " (" + this.weapons[weaponId].damage + " dam)";
+                document.getElementById("equippedWeapon").innerHTML = "WEAPON: " + this.weapons[weaponId].name + " (" + this.weapons[weaponId].damage + " dam)";
                 this.updateDisplay();
                 this.generateActions();
             });
@@ -172,56 +172,139 @@ class Game {
     }
     
     updateMap() {
-        // Reset all map locations
+        // Reset all map locations with smooth transitions
         Object.keys(this.locations).forEach(locId => {
             const mapEl = document.getElementById(`map-${locId}`);
             if (mapEl) {
                 mapEl.className = `map-location map-${locId}`;
+                // Add subtle pulse animation to all locations
+                mapEl.style.animation = 'locationPulse 3s ease-in-out infinite';
             }
         });
 
-        // Highlight current location
+        // Highlight current location with dramatic effects
         const currentMapEl = document.getElementById(`map-${this.player.location}`);
         if (currentMapEl) {
             currentMapEl.classList.add('current');
+            // Add glowing effect and bounce animation
         }
 
-        // Highlight connected locations
+        // Highlight connected locations with staggered animations
         const currentLoc = this.locations[this.player.location];
-        currentLoc.connections.forEach(connection => {
+        currentLoc.connections.forEach((connection, index) => {
             const connectedMapEl = document.getElementById(`map-${connection}`);
             if (connectedMapEl) {
                 connectedMapEl.classList.add('connected');
+                // Stagger the animation timing for a wave effect
             }
         });
 
-        // Draw roads
+        // Draw animated roads with gradient effects
         const svg = document.querySelector('.map-roads');
         const map = document.getElementById('map');
         const mapRect = map.getBoundingClientRect();
+        
         svg.setAttribute('width', mapRect.width);
         svg.setAttribute('height', mapRect.height);
         svg.innerHTML = '';
-        currentLoc.connections.forEach(connection => {
+
+        // Create gradient definitions for roads
+        const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+        
+        // Animated gradient for roads
+        const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+        gradient.setAttribute('id', 'roadGradient');
+        gradient.setAttribute('x1', '0%');
+        gradient.setAttribute('y1', '0%');
+        gradient.setAttribute('x2', '100%');
+        gradient.setAttribute('y2', '0%');
+        
+        const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+        stop1.setAttribute('offset', '0%');
+        stop1.setAttribute('stop-color', 'green');
+        stop1.setAttribute('stop-opacity', '0.8');
+        
+        const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+        stop2.setAttribute('offset', '100%');
+        stop2.setAttribute('stop-color', 'red');
+        stop2.setAttribute('stop-opacity', '0.8');
+        
+        gradient.appendChild(stop1);
+        gradient.appendChild(stop2);
+        defs.appendChild(gradient);
+        svg.appendChild(defs);
+
+        // Draw roads with enhanced styling
+        currentLoc.connections.forEach((connection, index) => {
             const fromEl = document.getElementById(`map-${this.player.location}`);
             const toEl = document.getElementById(`map-${connection}`);
+            
             if (fromEl && toEl) {
                 const fromRect = fromEl.getBoundingClientRect();
                 const toRect = toEl.getBoundingClientRect();
+                
                 const x1 = fromRect.left + fromRect.width / 2 - mapRect.left;
                 const y1 = fromRect.top + fromRect.height / 2 - mapRect.top;
                 const x2 = toRect.left + toRect.width / 2 - mapRect.left;
                 const y2 = toRect.top + toRect.height / 2 - mapRect.top;
-                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                line.setAttribute('x1', x1);
-                line.setAttribute('y1', y1);
-                line.setAttribute('x2', x2);
-                line.setAttribute('y2', y2);
-                line.setAttribute('stroke', '#ab4cde');
-                line.setAttribute('stroke-width', '2');
-                svg.appendChild(line);
+
+                // Create curved path instead of straight line
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                
+                // Calculate control points for a smooth curve
+                const midX = (x1 + x2) / 2;
+                const midY = (y1 + y2) / 2;
+                const offsetX = (y2 - y1) * 0.2; // Perpendicular offset for curve
+                const offsetY = (x1 - x2) * 0.2;
+                
+                const pathData = `M ${x1} ${y1} Q ${midX + offsetX} ${midY + offsetY} ${x2} ${y2}`;
+                path.setAttribute('d', pathData);
+                path.setAttribute('stroke', 'url(#roadGradient)');
+                path.setAttribute('stroke-width', '4');
+                path.setAttribute('fill', 'none');
+                path.setAttribute('stroke-linecap', 'round');
+                
+                // Add dashed animation effect
+                const pathLength = path.getTotalLength();
+                path.style.strokeDasharray = `${pathLength * 0.1} ${pathLength * 0.05}`;
+                path.style.strokeDashoffset = pathLength;
+                path.style.animation = `roadFlow 3s linear infinite ${index * 0.5}s`;
+                
+                // Add glow effect
+                path.style.filter = 'drop-shadow(0 0 8px rgba(171, 76, 222, 0.6))';
+                
+                svg.appendChild(path);
+
+                // Add particle effects along the path
+                this.createPathParticles(path, index);
             }
         });
+
+        // Add screen shake effect when updating
+        map.style.animation = 'mapUpdate 0.5s ease-out';
+    }
+
+    // Helper method for particle effects
+    createPathParticles(path, delay) {
+        const particle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        particle.setAttribute('r', '3');
+        particle.setAttribute('fill', '#ffffff');
+        particle.setAttribute('opacity', '0.8');
+        particle.style.filter = 'drop-shadow(0 0 4px rgba(255, 255, 255, 0.8))';
+        
+        // Animate particle along the path
+        const animateMotion = document.createElementNS('http://www.w3.org/2000/svg', 'animateMotion');
+        animateMotion.setAttribute('dur', '4s');
+        animateMotion.setAttribute('repeatCount', 'indefinite');
+        animateMotion.setAttribute('begin', `${delay * 0.5}s`);
+        
+        const mpath = document.createElementNS('http://www.w3.org/2000/svg', 'mpath');
+        mpath.setAttributeNS('http://www.w3.org/1999/xlink', 'href', `#${path.id || 'path'}`);
+        
+        animateMotion.appendChild(mpath);
+        particle.appendChild(animateMotion);
+        
+        path.parentNode.appendChild(particle);
     }
 
     updateStatus() {
@@ -621,25 +704,244 @@ class Game {
         return Object.keys(lootTable)[0]; // Fallback to first item if something goes wrong
     }
     
-    updateStory(message) {
-        const storyEl = document.getElementById('story-text');
-        if (!storyEl) return; // Safety check
+updateStory(message) {
+    const storyEl = document.getElementById('story-text');
+    if (!storyEl) return; // Safety check
+    
+    // Create new story entry
+    const newEntry = document.createElement('div');
+    newEntry.style.marginTop = '16px';
+    newEntry.style.color = 'lightgreen';
+    newEntry.style.opacity = '0';
+    newEntry.style.transform = 'translateY(10px)';
+    newEntry.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+    
+    // Add cursor element
+    const cursor = document.createElement('span');
+    cursor.innerHTML = '▋';
+    cursor.style.color = 'lightgreen';
+    cursor.style.animation = 'cursorBlink 1s infinite';
+    cursor.className = 'typing-cursor';
+    
+    storyEl.appendChild(newEntry);
+    
+    // Fade in the container
+    setTimeout(() => {
+        newEntry.style.opacity = '1';
+        newEntry.style.transform = 'translateY(0)';
+    }, 50);
+    
+    // Start typewriter effect
+    this.typewriterEffect(newEntry, message, cursor);
+    
+    // Scroll to bottom
+    storyEl.scrollTop = storyEl.scrollHeight;
+}
 
-        // Create new story entry
-        const newEntry = document.createElement('div');
-        newEntry.innerHTML = message;
-        newEntry.style.marginTop = '16px';
-        newEntry.style.color = 'lightgreen';
+typewriterEffect(element, text, cursor) {
+    let index = 0;
+    const speed = 30; // Milliseconds between each character
+    const fastSpeed = 15; // Speed for punctuation and spaces
+    
+    // Add cursor to element
+    element.appendChild(cursor);
+    
+    const typeChar = () => {
+        if (index < text.length) {
+            const char = text.charAt(index);
+            
+            // Insert character before cursor
+            const textNode = document.createTextNode(char);
+            element.insertBefore(textNode, cursor);
+            
+            index++;
+            
+            // Vary speed based on character type
+            let nextSpeed = speed;
+            if (char === ' ') nextSpeed = fastSpeed;
+            if (char === '.' || char === '!' || char === '?') nextSpeed = speed * 2;
+            if (char === ',' || char === ';') nextSpeed = speed * 1.5;
+            
+            // Add slight randomness to make it feel more natural
+            const randomVariation = (Math.random() - 0.5) * 20;
+            nextSpeed += randomVariation;
+            
+            // Continue typing
+            setTimeout(typeChar, Math.max(nextSpeed, 10));
+            
+            // Scroll to bottom as we type
+            const storyEl = document.getElementById('story-text');
+            if (storyEl) {
+                storyEl.scrollTop = storyEl.scrollHeight;
+            }
+        } else {
+            // Typing complete - handle cursor and color change
+            this.finishTyping(element, cursor);
+        }
+    };
+    
+    // Start typing with a small delay
+    setTimeout(typeChar, 100);
+}
 
-        storyEl.appendChild(newEntry);
-
-        setTimeout(() => {
-          newEntry.style.color = 'white';
-        }, 2500);
+finishTyping(element, cursor) {
+    // Keep cursor blinking for a moment
+    setTimeout(() => {
+        // Remove cursor
+        if (cursor.parentNode) {
+            cursor.parentNode.removeChild(cursor);
+        }
         
-        // Scroll to bottom
-        storyEl.scrollTop = storyEl.scrollHeight;
+        // Change color to white with smooth transition
+        element.style.transition = 'color 1s ease';
+        element.style.color = 'white';
+        
+        // Add a subtle glow effect when finished
+        element.style.textShadow = '0 0 5px rgba(255, 255, 255, 0.3)';
+        setTimeout(() => {
+            element.style.textShadow = 'none';
+        }, 1000);
+        
+    }, 500); // Cursor stays for 500ms after typing finishes
+}
+
+// Enhanced version with HTML parsing support
+updateStoryWithHTML(message) {
+    const storyEl = document.getElementById('story-text');
+    if (!storyEl) return;
+    
+    // Create new story entry
+    const newEntry = document.createElement('div');
+    newEntry.style.marginTop = '16px';
+    newEntry.style.color = 'lightgreen';
+    newEntry.style.opacity = '0';
+    newEntry.style.transform = 'translateY(10px)';
+    newEntry.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+    
+    // Add cursor element
+    const cursor = document.createElement('span');
+    cursor.innerHTML = '▋';
+    cursor.style.color = 'lightgreen';
+    cursor.style.animation = 'cursorBlink 1s infinite';
+    cursor.className = 'typing-cursor';
+    
+    storyEl.appendChild(newEntry);
+    
+    // Fade in container
+    setTimeout(() => {
+        newEntry.style.opacity = '1';
+        newEntry.style.transform = 'translateY(0)';
+    }, 50);
+    
+    // Parse HTML and type it out
+    this.typewriterEffectWithHTML(newEntry, message, cursor);
+    
+    // Scroll to bottom
+    storyEl.scrollTop = storyEl.scrollHeight;
+}
+
+typewriterEffectWithHTML(element, htmlContent, cursor) {
+    // Create a temporary element to parse HTML
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlContent;
+    
+    // Extract text content while preserving structure info
+    const textParts = this.extractTextWithTags(tempDiv);
+    
+    element.appendChild(cursor);
+    
+    let partIndex = 0;
+    let charIndex = 0;
+    
+    const typeNext = () => {
+        if (partIndex < textParts.length) {
+            const currentPart = textParts[partIndex];
+            
+            if (currentPart.type === 'text') {
+                if (charIndex < currentPart.content.length) {
+                    const char = currentPart.content.charAt(charIndex);
+                    const textNode = document.createTextNode(char);
+                    element.insertBefore(textNode, cursor);
+                    charIndex++;
+                    
+                    // Variable speed based on character
+                    let speed = 30;
+                    if (char === ' ') speed = 15;
+                    if (char === '.' || char === '!' || char === '?') speed = 60;
+                    
+                    setTimeout(typeNext, speed + (Math.random() - 0.5) * 20);
+                } else {
+                    partIndex++;
+                    charIndex = 0;
+                    setTimeout(typeNext, 10);
+                }
+            } else if (currentPart.type === 'tag') {
+                // Insert HTML tag instantly
+                const tagElement = document.createElement('div');
+                tagElement.innerHTML = currentPart.content;
+                const actualElement = tagElement.firstChild;
+                if (actualElement) {
+                    element.insertBefore(actualElement, cursor);
+                }
+                partIndex++;
+                setTimeout(typeNext, 50);
+            }
+            
+            // Scroll to bottom
+            const storyEl = document.getElementById('story-text');
+            if (storyEl) {
+                storyEl.scrollTop = storyEl.scrollHeight;
+            }
+        } else {
+            this.finishTyping(element, cursor);
+        }
+    };
+    
+    setTimeout(typeNext, 100);
+}
+
+extractTextWithTags(element) {
+    const parts = [];
+    
+    const traverse = (node) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+            if (node.textContent.trim()) {
+                parts.push({
+                    type: 'text',
+                    content: node.textContent
+                });
+            }
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+            // For simple formatting tags, we could preserve them
+            if (['B', 'I', 'EM', 'STRONG', 'SPAN'].includes(node.tagName)) {
+                parts.push({
+                    type: 'tag',
+                    content: `<${node.tagName.toLowerCase()}${this.getAttributesString(node)}>`
+                });
+                
+                Array.from(node.childNodes).forEach(traverse);
+                
+                parts.push({
+                    type: 'tag',
+                    content: `</${node.tagName.toLowerCase()}>`
+                });
+            } else {
+                Array.from(node.childNodes).forEach(traverse);
+            }
+        }
+    };
+    
+    Array.from(element.childNodes).forEach(traverse);
+    return parts;
+}
+
+getAttributesString(element) {
+    let attrs = '';
+    for (let attr of element.attributes) {
+        attrs += ` ${attr.name}="${attr.value}"`;
     }
+    return attrs;
+}
 
     getWeightedRandomItem(lootTable, noLootChance = 0.2) {
         if (!lootTable || Object.keys(lootTable).length === 0) return null;
