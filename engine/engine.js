@@ -160,7 +160,7 @@ class Game {
             inventoryEl.innerHTML = '<div class="inventory-item">Fists</div>';
         } else {
             inventoryEl.innerHTML = this.player.inventory.map(item => 
-                `<div class="inventory-item" onclick="game.useItem('${item}')" style="cursor: pointer;">${this.formatItemName(item)}${this.player.equippedWeapon === item ? ' (Equipped)' : ''}</div>`
+                `<div class="inventory-item" style="cursor: pointer;">${this.formatItemName(item)}${this.player.equippedWeapon === item ? ' (Equipped)' : ''}</div>` //onclick="game.useItem('${item}')" 
             ).join('');
         }
 
@@ -580,13 +580,13 @@ class Game {
 
         // Use item actions
         this.player.inventory.forEach(item => {
-            if (this.isUsableItem(item)) {
+            //if (this.isUsableItem(item)) {
                 buttons.push({
                     text: `Use ${this.formatItemName(item)}`,
                     action: `game.useItem('${item}')`,
                     disabled: this.actionInProgress
                 });
-            }
+            //}
             // Equip weapon action
             if (this.weapons[item] && item !== this.player.equippedWeapon) {
                 buttons.push({

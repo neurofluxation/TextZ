@@ -392,6 +392,7 @@ body::before {
     flex-wrap: wrap;
     gap: 10px;
     min-height: 50px;
+    cursor: default !important;
 }
 
 .inventory-item {
@@ -408,6 +409,7 @@ body::before {
     letter-spacing: 0.5px;
     font-weight: bold;
     color: #c0c0c0;
+    cursor: default !important;
 }
 
 .inventory-item::before {
@@ -435,14 +437,6 @@ body::before {
     box-shadow: 0 0 15px rgba(34, 139, 34, 0.4);
 }
 
-.inventory-item:hover {
-    background: 
-        linear-gradient(135deg, rgba(139, 69, 19, 0.6) 0%, rgba(34, 139, 34, 0.3) 100%);
-    border-color: #8B4513;
-    transform: scale(1.08) rotate(1deg);
-    box-shadow: 0 4px 15px rgba(139, 69, 19, 0.5);
-    color: #ffffff;
-}
 
 .map-container {
     background: 
