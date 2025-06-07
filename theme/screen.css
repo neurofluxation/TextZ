@@ -61,10 +61,6 @@ body::before {
     max-width: 1600px;
     width: 100%;
     margin: 0 auto;
-    background: 
-        radial-gradient(circle at 30% 30%, rgba(139, 69, 19, 0.1) 0%, transparent 70%),
-        rgba(0, 0, 0, 0.92);
-    border-radius: 12px;
     padding: 15px;
     min-height: calc(100vh - 20px);
     display: grid;
@@ -76,10 +72,6 @@ body::before {
         "stats"
         "main"
         "actions";
-    border: 2px solid rgba(139, 69, 19, 0.3);
-    box-shadow: 
-        0 0 50px rgba(139, 69, 19, 0.2),
-        inset 0 0 50px rgba(0, 0, 0, 0.5);
 }
 
 @media (min-width: 1400px) {
