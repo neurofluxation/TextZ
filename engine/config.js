@@ -12,8 +12,8 @@ var CONFIG = {
     //DAMAGE
     base_damage: 10, //damage with fists as points of damage
     zombie_damage: 15, //damage from zombies
-    infection_chance: 0.12, //the change of infection (0.15 = 15%)
-    zombie_chance: 0.5, //the chance of being attacked when travelling (0.5 = 50%)
+    infection_chance: 0.15, //the change of infection (0.15 = 15%)
+    zombie_chance: 0.45, //the chance of being attacked when travelling (0.5 = 50%)
     encounter_chance: 0.2, //the chance of an encounter happening when travelling (0.25 = 25%)
     interactTime: 1250, //the time you have to interact with the dodge/attack button
     
