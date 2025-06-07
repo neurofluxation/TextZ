@@ -452,6 +452,7 @@ class Game {
               this.startAction(`Traveling to ${this.locations[destination].name}...`, () => {
                 this.player.location = destination;
                 this.updateStory(`You have arrived at ${this.locations[destination].name}.`);
+                this.updateStory(`It is ${weatherTypes[currentWeather]}.`);
                 
                 var shouldWeatherChange = Math.floor(Math.random() * 100);
                 if (shouldWeatherChange < 25) {
@@ -468,7 +469,6 @@ class Game {
                     }
                   }
                 }
-                this.updateStory(`It is ${weatherTypes[currentWeather]}.`);
                 
                 const encounterChance = Math.random();
                 if (encounterChance < CONFIG.zombie_chance) {
@@ -490,7 +490,7 @@ class Game {
           this.startAction(`Traveling to ${this.locations[destination].name}...`, () => {
               this.player.location = destination;
               this.updateStory(`You have arrived at ${this.locations[destination].name}.`);
-
+              this.updateStory(`It is ${weatherTypes[currentWeather]}.`);
               var weatherChange = Math.floor(Math.random() * 100);
               if (weatherChange < 50) {
                 currentWeather--;
@@ -503,7 +503,6 @@ class Game {
                   currentWeather = 0;
                 }
               }
-              this.updateStory(`It is ${weatherTypes[currentWeather]}.`);
               
               const encounterChance = Math.random();
               if (encounterChance < CONFIG.zombie_chance) {
