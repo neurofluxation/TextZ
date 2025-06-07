@@ -1158,5 +1158,17 @@ function showConfirmPopup(callback) {
   };
 }
 
+document.getElementById("clearScores").addEventListener("click", function(e) {
+  e.preventDefault();
+  if (localStorage.getItem("TextZ_HiScores")) {
+    var sure = confirm("Do you want to clear the hiscore table?");
+    if (sure) {
+      localStorage.removeItem("TextZ_HiScores");
+      window.location.reload();
+    }
+  } else {
+    alert("There are no scores yet!");
+  }
+});
 // Start the game
 const game = new Game();
