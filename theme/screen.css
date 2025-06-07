@@ -1096,6 +1096,24 @@ a:hover {
   cursor: pointer;
 }
 
+#score-text {
+  position: absolute;
+  display: block;
+  bottom: 0px;
+  min-width: 100px;
+  height: 34px;
+  left: 0.25em;
+  background-color: #0d3410;
+  text-align: center;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  top: auto;
+  right: auto;
+  font-size: 1.3em;
+  font-weight: bold;
+  line-height: 2em;
+}
+
 /* Enhanced scrollbar with zombie theme */
 *::-webkit-scrollbar {
     width: 6px;
