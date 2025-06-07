@@ -17,6 +17,9 @@ glock
 knife
 rifle
 pistol
+hoe
+leadpipe
+m4a1
 */
 var LOCATIONS = {
   // Northwest Region
@@ -31,6 +34,7 @@ var LOCATIONS = {
           soda_can: 0.1,
           bandage: 0.1,
           knife: 0.05,
+          hoe: 0.05,
           fresh_fruit: 0.1
       },
       zombieChance: 0.3
@@ -47,6 +51,7 @@ var LOCATIONS = {
           bandage: 0.1,
           knife: 0.05,
           junk: 0.05,
+          hoe: 0.05,
           glock: 0.05
       },
       zombieChance: 0.3
@@ -64,6 +69,7 @@ var LOCATIONS = {
           knife: 0.1,
           mosinRifle: 0.1,
           backpack: 0.1,
+          m4a1: 0.05,
           antibiotics: 0.1
       },
       zombieChance: 0.5
@@ -80,6 +86,7 @@ var LOCATIONS = {
           rifle: 0.15,
           knife: 0.1,
           mosinRifle: 0.1,
+          m4a1: 0.05,
           backpack: 0.05
       },
       zombieChance: 0.6
@@ -97,6 +104,8 @@ var LOCATIONS = {
           pistol: 0.1,
           rifle: 0.1,
           junk: 0.1,
+          hoe: 0.05,
+          m4a1: 0.02,
           backpack: 0.05
       },
       zombieChance: 0.45
@@ -112,6 +121,7 @@ var LOCATIONS = {
           energy_drink: 0.1,
           medical_supplies: 0.1,
           pistol: 0.12,
+          hoe: 0.05,
           junk: 0.08,
           backpack: 0.1
       },
@@ -131,7 +141,9 @@ var LOCATIONS = {
           pistol: 0.1,
           knife: 0.1,
           junk: 0.1,
+          m4a1: 0.02,
           backpack: 0.05,
+          hoe: 0.05,
           glock: 0.05
       },
       zombieChance: 0.35
@@ -146,6 +158,7 @@ var LOCATIONS = {
           water_bottle: 0.15,
           junk: 0.2,
           bandage: 0.1,
+          hoe: 0.05,
           knife: 0.1,
           energy_drink: 0.1
       },
@@ -164,6 +177,7 @@ var LOCATIONS = {
           fishing_rod: 0.2,
           knife: 0.1,
           bandage: 0.1,
+          m4a1: 0.02,
           soda_can: 0.05
       },
       zombieChance: 0.2
@@ -197,6 +211,7 @@ var LOCATIONS = {
           water_bottle: 0.2,
           soda_can: 0.15,
           bandage: 0.15,
+          hoe: 0.05,
           knife: 0.1,
           junk: 0.05
       },
@@ -252,6 +267,7 @@ var LOCATIONS = {
           canned_food: 0.25,
           fresh_fruit: 0.2,
           water_bottle: 0.2,
+          hoe: 0.05,
           soda_can: 0.15,
           fishing_rod: 0.15,
           bandage: 0.05
@@ -272,6 +288,7 @@ var LOCATIONS = {
           rifle: 0.1,
           mosinRifle: 0.05,
           junk: 0.15,
+          m4a1: 0.02,
           backpack: 0.05
       },
       zombieChance: 0.45
@@ -284,6 +301,7 @@ var LOCATIONS = {
           canned_food: 0.25,
           fresh_fruit: 0.2,
           water_bottle: 0.2,
+          hoe: 0.05,
           soda_can: 0.15,
           bandage: 0.15,
           knife: 0.05
@@ -315,6 +333,7 @@ var LOCATIONS = {
           canned_food: 0.25,
           protein_bar: 0.15,
           water_bottle: 0.2,
+          hoe: 0.05,
           soda_can: 0.15,
           bandage: 0.1,
           junk: 0.05,
@@ -334,10 +353,12 @@ var LOCATIONS = {
           fresh_fruit: 0.1,
           water_bottle: 0.15,
           soda_can: 0.1,
+          hoe: 0.05,
           bandage: 0.1,
           medical_supplies: 0.1,
           pistol: 0.08,
           knife: 0.02,
+          leadpipe: 0.05,
           glock: 0.05
       },
       zombieChance: 0.4
@@ -351,6 +372,8 @@ var LOCATIONS = {
           fresh_fruit: 0.15,
           water_bottle: 0.2,
           soda_can: 0.15,
+          leadpipe: 0.05,
+          hoe: 0.05,
           fishing_rod: 0.15,
           bandage: 0.1,
           knife: 0.05
@@ -367,6 +390,7 @@ var LOCATIONS = {
           water_bottle: 0.15,
           energy_drink: 0.1,
           junk: 0.2,
+          leadpipe: 0.05,
           bandage: 0.1,
           knife: 0.1,
           pistol: 0.05
@@ -384,6 +408,7 @@ var LOCATIONS = {
           water_bottle: 0.15,
           soda_can: 0.1,
           medical_supplies: 0.2,
+          leadpipe: 0.05,
           antibiotics: 0.1,
           bandage: 0.15,
           backpack: 0.05
@@ -401,6 +426,7 @@ var LOCATIONS = {
           antibiotics: 0.1,
           bandage: 0.1,
           pistol: 0.1,
+          leadpipe: 0.05,
           rifle: 0.1,
           backpack: 0.1,
           mosinRifle: 0.05
@@ -417,6 +443,7 @@ var LOCATIONS = {
           water_bottle: 0.15,
           energy_drink: 0.1,
           junk: 0.2,
+          leadpipe: 0.05,
           medical_supplies: 0.1,
           pistol: 0.1,
           backpack: 0.05
@@ -430,6 +457,7 @@ var LOCATIONS = {
       lootTable: {
           canned_food: 0.2,
           fresh_fruit: 0.15,
+          leadpipe: 0.05,
           water_bottle: 0.2,
           soda_can: 0.15,
           bandage: 0.1,
@@ -446,6 +474,7 @@ var LOCATIONS = {
       lootTable: {
           military_rations: 0.2,
           energy_drink: 0.15,
+          leadpipe: 0.05,
           medical_supplies: 0.15,
           antibiotics: 0.1,
           bandage: 0.1,
@@ -463,6 +492,7 @@ var LOCATIONS = {
           canned_food: 0.2,
           fresh_fruit: 0.2,
           water_bottle: 0.25,
+          leadpipe: 0.05,
           soda_can: 0.15,
           fishing_rod: 0.15,
           bandage: 0.05
@@ -477,6 +507,7 @@ var LOCATIONS = {
           canned_food: 0.25,
           fresh_fruit: 0.2,
           water_bottle: 0.25,
+          leadpipe: 0.05,
           soda_can: 0.15,
           fishing_rod: 0.15
       },

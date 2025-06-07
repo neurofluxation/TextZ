@@ -491,11 +491,11 @@ class Game {
 
         // Travel actions
         loc.connections.forEach(conn => {
-            buttons.push({
+            /*buttons.push({
                 text: `Travel to ${this.locations[conn].name}`,
                 action: `game.mapTravel('${conn}')`,
                 disabled: this.actionInProgress
-            });
+            });*/
         });
 
         // Use item actions
