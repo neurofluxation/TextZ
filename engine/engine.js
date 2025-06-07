@@ -443,48 +443,48 @@ class Game {
         const currentLocation = this.player.location;
         const allowedConnections = this.locations[currentLocation].connections;
 
-        if (!allowedConnections.includes(destination)) {
-            var sure = confirm("Travelling this distance will deplete your hunger & thirst!\r\nAre you sure?");
+        if (!allowedConnections.includes(destination)) {showConfirmPopup((sure) => {
             if (sure) {
               this.startAction(`Traveling to ${this.locations[destination].name}...`, () => {
-                  this.player.location = destination;
-                  this.updateStory(`You have arrived at ${this.locations[destination].name}.`);
+                this.player.location = destination;
+                this.updateStory(`You have arrived at ${this.locations[destination].name}.`);
 
-                  const encounterChance = Math.random();
-                  if (encounterChance < CONFIG.zombie_chance) {
-                      this.zombieEncounter();
-                  } else if (encounterChance < CONFIG.zombie_chance + CONFIG.survivor_chance) {
-                      this.survivorEncounter();
-                  }
+                const encounterChance = Math.random();
+                if (encounterChance < CONFIG.zombie_chance) {
+                  this.zombieEncounter();
+                } else if (encounterChance < CONFIG.zombie_chance + CONFIG.survivor_chance) {
+                  this.survivorEncounter();
+                }
 
-                  this.player.hunger = 0;
-                  this.player.thirst = 0;
-                  this.updateStatus();
-                  this.updateDisplay();
-                  this.generateActions();
+                this.player.hunger = 0;
+                this.player.thirst = 0;
+                this.updateStatus();
+                this.updateDisplay();
+                this.generateActions();
               });
             }
-            //this.updateStory(`<span class="warning">You cannot travel directly from ${this.locations[currentLocation].name} to ${this.locations[destination].name}.</span>`);
-            return;
+          });
+        } else {
+
+          this.startAction(`Traveling to ${this.locations[destination].name}...`, () => {
+              this.player.location = destination;
+              this.updateStory(`You have arrived at ${this.locations[destination].name}.`);
+
+              const encounterChance = Math.random();
+              if (encounterChance < CONFIG.zombie_chance) {
+                  this.zombieEncounter();
+              } else if (encounterChance < CONFIG.zombie_chance + CONFIG.survivor_chance) {
+                  this.survivorEncounter();
+              }
+
+              this.player.hunger = Math.max(0, this.player.hunger - CONFIG.travel_hunger);
+              this.player.thirst = Math.max(0, this.player.thirst - CONFIG.travel_thirst);
+              this.updateStatus();
+              this.updateDisplay();
+              this.generateActions();
+          });
+          
         }
-
-        this.startAction(`Traveling to ${this.locations[destination].name}...`, () => {
-            this.player.location = destination;
-            this.updateStory(`You have arrived at ${this.locations[destination].name}.`);
-
-            const encounterChance = Math.random();
-            if (encounterChance < CONFIG.zombie_chance) {
-                this.zombieEncounter();
-            } else if (encounterChance < CONFIG.zombie_chance + CONFIG.survivor_chance) {
-                this.survivorEncounter();
-            }
-
-            this.player.hunger = Math.max(0, this.player.hunger - CONFIG.travel_hunger);
-            this.player.thirst = Math.max(0, this.player.thirst - CONFIG.travel_thirst);
-            this.updateStatus();
-            this.updateDisplay();
-            this.generateActions();
-        });
     }
 
     isUsableItem(item) {
@@ -1096,6 +1096,21 @@ class Game {
             loc.style.opacity = '1';
         });
     }
+}
+
+function showConfirmPopup(callback) {
+  const popup = document.getElementById("confirmPopup");
+  popup.style.display = "flex";
+
+  document.getElementById("popupYes").onclick = () => {
+    popup.style.display = "none";
+    callback(true);
+  };
+
+  document.getElementById("popupNo").onclick = () => {
+    popup.style.display = "none";
+    callback(false);
+  };
 }
 
 // Start the game

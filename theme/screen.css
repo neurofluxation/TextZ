@@ -1066,6 +1066,39 @@ a:hover {
     font-size: 1.1em;
 }
 
+.popup-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-box {
+  background: #000000;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  max-width: 600px;
+  text-align: center;
+  font-size: 1.5em;
+  box-shadow: 0 0 10px black;
+}
+
+.popup-buttons {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.popup-buttons button {
+  padding: 0.5rem 1rem;
+  margin: 0 0.25rem;
+  cursor: pointer;
+}
+
 /* Enhanced scrollbar with zombie theme */
 *::-webkit-scrollbar {
     width: 12px;
