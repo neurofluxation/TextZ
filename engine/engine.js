@@ -692,8 +692,8 @@ updateStory(message) {
 
 typewriterEffect(element, text, cursor) {
     let index = 0;
-    const speed = 30; // Milliseconds between each character
-    const fastSpeed = 15; // Speed for punctuation and spaces
+    const speed = 20; // Milliseconds between each character
+    const fastSpeed = 10; // Speed for punctuation and spaces
     
     // Add cursor to element
     element.appendChild(cursor);
