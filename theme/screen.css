@@ -72,9 +72,10 @@ body::before {
         "stats"
         "main"
         "actions";
+    transform: scale(0.8) translateY(-10vh);
 }
 
-@media (min-width: 1400px) {
+@media (min-width: 1024px) {
     .game-container {
         grid-template-columns: 1fr 800px;
     }
