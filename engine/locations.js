@@ -68,7 +68,7 @@ var LOCATIONS = {
           rifle: 0.08,
           knife: 0.1,
           mosinRifle: 0.1,
-          backpack: 0.1,
+          largeBackpack: 0.1,
           m4a1: 0.05,
           antibiotics: 0.1
       },
@@ -87,7 +87,7 @@ var LOCATIONS = {
           knife: 0.1,
           mosinRifle: 0.1,
           m4a1: 0.05,
-          backpack: 0.05
+          largeBackpack: 0.05
       },
       zombieChance: 0.6
   },
@@ -106,7 +106,7 @@ var LOCATIONS = {
           junk: 0.1,
           hoe: 0.05,
           m4a1: 0.02,
-          backpack: 0.05
+          smallBackpack: 0.05
       },
       zombieChance: 0.45
   },
@@ -123,7 +123,7 @@ var LOCATIONS = {
           pistol: 0.12,
           hoe: 0.05,
           junk: 0.08,
-          backpack: 0.1
+          smallBackpack: 0.1
       },
       zombieChance: 0.4
   },
@@ -429,7 +429,8 @@ var LOCATIONS = {
           pistol: 0.1,
           leadpipe: 0.05,
           rifle: 0.1,
-          backpack: 0.1,
+          smallBackpack: 0.1,
+          largeBackpack: 0.1,
           mosinRifle: 0.05
       },
       zombieChance: 0.6

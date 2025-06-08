@@ -587,7 +587,9 @@ class Game {
             antibiotics: 'Antibiotics',
             fishing_rod: 'Fishing Rod',
             junk: 'Junk',
-            backpack: 'Backpack'
+            smallBackpack: 'Side Bag',
+            backpack: 'Small Backpack',
+            largeBackpack: 'Military Backpack'
         };
         if (this.weapons[item]) {
             return this.weapons[item].name;
@@ -1405,10 +1407,20 @@ getAttributesString(element) {
                         this.updateStory('You took antibiotics, curing your infection.');
                         this.player.score += 100;
                         break;
-                    case 'backpack':
-                        this.player.inventoryCapacity = 12; // Increase from 8
-                        this.updateStory('You equipped a backpack, increasing your inventory capacity.');
+                    case 'smallBackpack':
+                        this.player.inventoryCapacity = 5; // Increase from 8
+                        this.updateStory('You equipped a side bag, increasing your inventory capacity to 5.');
                         this.player.score += 15;
+                        break;
+                    case 'backpack':
+                        this.player.inventoryCapacity = 6; // Increase from 8
+                        this.updateStory('You equipped a backpack, increasing your inventory capacity to 6.');
+                        this.player.score += 20;
+                        break;
+                    case 'largeBackpack':
+                        this.player.inventoryCapacity = 10; // Increase from 8
+                        this.updateStory('You equipped a military backpack, increasing your inventory capacity to 10.');
+                        this.player.score += 25;
                         break;
                     case 'junk':
                         this.updateStory('You have played with your junk ' + (this.player.junk + 1) + ' times!');
