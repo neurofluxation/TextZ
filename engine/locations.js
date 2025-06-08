@@ -294,9 +294,9 @@ var LOCATIONS = {
       zombieChance: 0.45
   },
   kozlovka: {
-      name: 'Kozlovka',
+      name: 'kozlovka',
       description: 'A small western village with a few houses and a store.',
-      connections: ['pavlovo', 'pogorevka', 'zelenogorsk'],
+      connections: ['pavlovo', 'pogorevka', 'zelenogorsk', 'balota'],
       lootTable: {
           canned_food: 0.25,
           fresh_fruit: 0.2,
@@ -419,7 +419,7 @@ var LOCATIONS = {
   balota: {
       name: 'Balota Airfield',
       description: 'An abandoned airfield with hangars and barracks. High-value loot but very dangerous.',
-      connections: ['cherno', 'komarovo', 'kamenka', 'pavlovo'],
+      connections: ['cherno', 'komarovo', 'kamenka', 'pavlovo', 'kozlovka'],
       lootTable: {
           military_rations: 0.2,
           energy_drink: 0.15,
@@ -471,7 +471,7 @@ var LOCATIONS = {
   zelenogorsk: {
       name: 'Zelenogorsk',
       description: 'An inland town with a military checkpoint. Good for military gear but risky due to patrols.',
-      connections: ['cherno', 'vybor', 'myshkino', 'novy_sobor', 'pavlovo', 'pogorevka'],
+      connections: ['cherno', 'vybor', 'myshkino', 'novy_sobor', 'pavlovo', 'pogorevka', 'kozlovka'],
       lootTable: {
           military_rations: 0.2,
           energy_drink: 0.15,
