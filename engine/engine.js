@@ -1404,23 +1404,24 @@ getAttributesString(element) {
                         break;
                     case 'antibiotics':
                         this.player.infection = false; // Clear infection
-                        this.updateStory('You took antibiotics, curing your infection.');
+                        this.player.health = Math.min(100, this.player.health + 50);
+                        this.updateStory('You took antibiotics, curing your infection and increasing your health.');
                         this.player.score += 100;
                         break;
                     case 'smallBackpack':
                         this.player.inventoryCapacity = 6; // Increase from 8
                         this.updateStory('You equipped a side bag, increasing your inventory capacity to 5.');
-                        this.player.score += 15;
+                        this.player.score += 30;
                         break;
                     case 'backpack':
                         this.player.inventoryCapacity = 8; // Increase from 8
                         this.updateStory('You equipped a backpack, increasing your inventory capacity to 6.');
-                        this.player.score += 20;
+                        this.player.score += 40;
                         break;
                     case 'largeBackpack':
                         this.player.inventoryCapacity = 10; // Increase from 8
                         this.updateStory('You equipped a military backpack, increasing your inventory capacity to 10.');
-                        this.player.score += 25;
+                        this.player.score += 50;
                         break;
                     case 'junk':
                         this.updateStory('You have played with your junk ' + (this.player.junk + 1) + ' times!');
