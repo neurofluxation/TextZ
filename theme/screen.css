@@ -3,7 +3,16 @@
     padding: 0;
     box-sizing: border-box;
 }
-
+.comic-relief-regular {
+  font-family: "Comic Relief", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+.comic-relief-bold {
+  font-family: "Comic Relief", system-ui;
+  font-weight: 700;
+  font-style: normal;
+}
 .material-symbols-outlined {
     font-family: 'Material Symbols Outlined';
     font-variation-settings:
@@ -1131,6 +1140,10 @@ a:hover {
     left: 0;
     pointer-events: none;
     z-index: 1;
+}
+
+.comic {
+  font-family: 'Comic Relief';
 }
 
 /* Enhanced scrollbar with zombie theme */
