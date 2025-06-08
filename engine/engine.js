@@ -101,6 +101,10 @@ class Game {
         this.player.name = "NAME: " + firstnames[fname].toUpperCase() + " " + surnames[sname].toUpperCase();
         document.getElementById("name").innerHTML = this.player.name;
         document.getElementById("start").remove();
+        
+        document.getElementById("carrying").innerHTML = this.player.inventory.length;
+        document.getElementById("maxCarrying").innerHTML = this.player.inventoryCapacity;
+        
         this.updateDisplay();
         this.generateActions();
         setInterval(() => this.tick(), CONFIG.tick_time);
@@ -1010,6 +1014,9 @@ getAttributesString(element) {
                 this.player.inventory.push(loot);
                 this.updateStory(`You found ${this.formatItemName(loot)}!`);
                 this.player.score += 10;
+                
+                document.getElementById("carrying").innerHTML = this.player.inventory.length;
+                document.getElementById("maxCarrying").innerHTML = this.player.inventoryCapacity;
             } else {
                 this.updateStory('You searched but found nothing useful.');
             }

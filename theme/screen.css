@@ -75,7 +75,6 @@ body::before {
         "stats"
         "main"
         "actions";
-    transform: scale(0.8) translateY(-10vh);
 }
 
 @media (min-width: 1024px) {
@@ -285,9 +284,6 @@ body::before {
 }
 
 .actions {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 15px;
     margin-bottom: 25px;
 }
 
@@ -311,14 +307,16 @@ body::before {
     font-weight: bold;
     transition: all 0.3s ease;
     border: 2px solid rgba(139, 69, 19, 0.4);
-    min-height: 60px;
+    min-height: 55px;
     position: relative;
     overflow: hidden;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0px;
     box-shadow: 
         0 4px 15px rgba(0, 0, 0, 0.3),
         inset 0 1px 0 rgba(139, 69, 19, 0.3);
+    min-width: 100px;
+    margin-right: 0.5em;
 }
 
 .action-btn::before {
