@@ -149,7 +149,9 @@ class Game {
         const loc = this.locations[this.player.location];
         document.getElementById('location-name').textContent = "Location: " + loc.name;
         document.getElementById('location-description').textContent = loc.description;
-        
+                          
+        document.getElementById("carrying").innerHTML = this.player.inventory.length;
+        document.getElementById("maxCarrying").innerHTML = this.player.inventoryCapacity;
         
         const startLocationEl = document.getElementById('start-location');
         if (startLocationEl && !startLocationEl.textContent) {
