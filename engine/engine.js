@@ -1408,12 +1408,12 @@ getAttributesString(element) {
                         this.player.score += 100;
                         break;
                     case 'smallBackpack':
-                        this.player.inventoryCapacity = 5; // Increase from 8
+                        this.player.inventoryCapacity = 6; // Increase from 8
                         this.updateStory('You equipped a side bag, increasing your inventory capacity to 5.');
                         this.player.score += 15;
                         break;
                     case 'backpack':
-                        this.player.inventoryCapacity = 6; // Increase from 8
+                        this.player.inventoryCapacity = 8; // Increase from 8
                         this.updateStory('You equipped a backpack, increasing your inventory capacity to 6.');
                         this.player.score += 20;
                         break;

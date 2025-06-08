@@ -4,7 +4,7 @@ var CONFIG = {
     starting_health: 100, //as a %
     starting_hunger: 50, //as a %
     starting_thirst: 50, //as a %
-    starting_carry_space: 3, //as a number of items
+    starting_carry_space: 4, //as a number of items
     starting_inventory: [ //what you carry at spawn as a name list
       'fresh_fruit',
     ],
