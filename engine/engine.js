@@ -1037,25 +1037,29 @@ getAttributesString(element) {
             const loc = this.locations[this.player.location];
             const noLootChance = loc.zombieChance > 0.5 ? 0.3 : 0.2;
             const loot = this.getWeightedRandomItem(loc.lootTable, noLootChance);
-            if (loot && this.player.inventory.length < this.player.inventoryCapacity) {
-                var found = false;
-                for (var i = 0; i < this.inventory.length; i++) {
-                  if (this.inventory[i] == loot) {
-                    found = true;
-                  }
-                }
-                if (found == false) {
-                  this.player.inventory.push(loot);
-                  this.updateStory(`You found ${this.formatItemName(loot)}!`);
-                  this.player.score += 10;
-                  
-                  document.getElementById("carrying").innerHTML = this.player.inventory.length;
-                  document.getElementById("maxCarrying").innerHTML = this.player.inventoryCapacity;
-                } else {
-                  this.updateStory('You searched but found nothing useful.');
-                }
+            if (!loot) {
+               this.updateStory('You searched but found nothing useful.');
             } else {
-                this.updateStory('You cannot carry anything else!');
+              if (this.player.inventory.length < this.player.inventoryCapacity) {
+                  var found = false;
+                  for (var i = 0; i < this.player.inventory.length; i++) {
+                    if (this.player.inventory[i] == loot) {
+                      found = true;
+                    }
+                  }
+                  if (found == false) {
+                    this.player.inventory.push(loot);
+                    this.updateStory(`You found ${this.formatItemName(loot)}!`);
+                    this.player.score += 10;
+                    
+                    document.getElementById("carrying").innerHTML = this.player.inventory.length;
+                    document.getElementById("maxCarrying").innerHTML = this.player.inventoryCapacity;
+                  } else {
+                    this.updateStory('You searched but found nothing useful.');
+                  }
+              } else {
+                  this.updateStory('You cannot carry anything else!');
+              }
             }
             if (Math.random() < loc.zombieChance) {
                 this.zombieEncounter();
