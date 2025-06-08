@@ -316,6 +316,7 @@ body::before {
         inset 0 1px 0 rgba(139, 69, 19, 0.3);
     min-width: 100px;
     margin-right: 0.5em;
+    margin-bottom: 0.5em;
 }
 
 .action-btn::before {
