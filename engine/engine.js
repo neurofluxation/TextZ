@@ -593,6 +593,16 @@ class Game {
         return itemNames[item] || item.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
     }
 
+    dropWeapon(weapon) {
+      for (var i = 0; i < this.player.inventory.length; i++) {
+        if (this.player.inventory[i] == weapon) {
+          this.player.inventory.splice(i, 1);
+        }
+      }
+      this.updateDisplay();
+      this.generateActions();
+    }
+
     generateActions() {
         if (!this.gameRunning || document.getElementById('trade-popup')) return; // Skip if trade popup is active
         const actionsEl = document.getElementById('action-buttons');
@@ -629,6 +639,11 @@ class Game {
                 buttons.push({
                     text: `Equip ${this.weapons[item].name} (${this.weapons[item].damage} dam)`,
                     action: `game.equipWeapon('${item}')`,
+                    disabled: this.actionInProgress
+                });
+                buttons.push({
+                    text: `Drop ${this.weapons[item].name}`,
+                    action: `game.dropWeapon('${item}')`,
                     disabled: this.actionInProgress
                 });
             }
