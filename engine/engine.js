@@ -684,10 +684,133 @@ updateStory(message) {
     }, 50);
     
     // Start typewriter effect
-    this.typewriterEffect(newEntry, message, cursor);
+    this.typewriterEffectWithHTML(newEntry, message, cursor);
     
     // Scroll to bottom
     storyEl.scrollTop = storyEl.scrollHeight;
+}
+
+getTextNodesWithParents(element) {
+    const result = [];
+    
+    const walk = (node, parents = []) => {
+        if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+            result.push({
+                text: node.textContent,
+                parents: [...parents]
+            });
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+            const newParents = [...parents, {
+                tagName: node.tagName,
+                attributes: Array.from(node.attributes)
+            }];
+            
+            for (let child of node.childNodes) {
+                walk(child, newParents);
+            }
+        }
+    };
+    
+    walk(element);
+    return result;
+}
+
+ensureElementStructure(container, parentStructure, cursor) {
+    let currentElement = container;
+    
+    for (let parent of parentStructure) {
+        // Check if we already have this element structure
+        let found = false;
+        for (let child of currentElement.children) {
+            if (child.tagName === parent.tagName && child !== cursor) {
+                currentElement = child;
+                found = true;
+                break;
+            }
+        }
+        
+        if (!found) {
+            // Create the new element
+            const newElement = document.createElement(parent.tagName);
+            
+            // Copy attributes
+            for (let attr of parent.attributes) {
+                newElement.setAttribute(attr.name, attr.value);
+            }
+            
+            // Insert before cursor
+            currentElement.insertBefore(newElement, cursor);
+            currentElement = newElement;
+        }
+    }
+    
+    return currentElement;
+}
+
+typewriterEffectWithHTML(element, htmlText, cursor) {
+    // Extract plain text from HTML
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlText;
+    const plainText = tempDiv.textContent || tempDiv.innerText || '';
+    
+    // Use regular typewriter effect for plain text
+    this.typewriterEffectPlain(element, plainText, cursor, () => {
+        // After typing is complete, replace with HTML version
+        element.innerHTML = htmlText;
+        // Re-add the glow effect
+        element.style.textShadow = '0 0 5px rgba(255, 255, 255, 0.3)';
+        setTimeout(() => {
+            element.style.textShadow = 'none';
+        }, 1000);
+    });
+}
+
+typewriterEffectPlain(element, text, cursor, onComplete) {
+    let index = 0;
+    const speed = 20;
+    const fastSpeed = 10;
+    
+    element.appendChild(cursor);
+    
+    const typeChar = () => {
+        if (index < text.length) {
+            const char = text.charAt(index);
+            const textNode = document.createTextNode(char);
+            element.insertBefore(textNode, cursor);
+            
+            index++;
+            
+            let nextSpeed = speed;
+            if (char === ' ') nextSpeed = fastSpeed;
+            if (char === '.' || char === '!' || char === '?') nextSpeed = speed * 2;
+            if (char === ',' || char === ';') nextSpeed = speed * 1.5;
+            
+            const randomVariation = (Math.random() - 0.5) * 20;
+            nextSpeed += randomVariation;
+            
+            setTimeout(typeChar, Math.max(nextSpeed, 10));
+            
+            const storyEl = document.getElementById('story-text');
+            if (storyEl) {
+                storyEl.scrollTop = storyEl.scrollHeight;
+            }
+        } else {
+            // Remove cursor and call completion callback
+            setTimeout(() => {
+                if (cursor.parentNode) {
+                    cursor.parentNode.removeChild(cursor);
+                }
+                element.style.transition = 'color 1s ease';
+                element.style.color = 'white';
+                
+                if (onComplete) {
+                    onComplete();
+                }
+            }, 500);
+        }
+    };
+    
+    setTimeout(typeChar, 100);
 }
 
 typewriterEffect(element, text, cursor) {
@@ -757,7 +880,6 @@ finishTyping(element, cursor) {
     }, 500); // Cursor stays for 500ms after typing finishes
 }
 
-// Enhanced version with HTML parsing support
 updateStoryWithHTML(message) {
     const storyEl = document.getElementById('story-text');
     if (!storyEl) return;
@@ -790,66 +912,6 @@ updateStoryWithHTML(message) {
     
     // Scroll to bottom
     storyEl.scrollTop = storyEl.scrollHeight;
-}
-
-typewriterEffectWithHTML(element, htmlContent, cursor) {
-    // Create a temporary element to parse HTML
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = htmlContent;
-    
-    // Extract text content while preserving structure info
-    const textParts = this.extractTextWithTags(tempDiv);
-    
-    element.appendChild(cursor);
-    
-    let partIndex = 0;
-    let charIndex = 0;
-    
-    const typeNext = () => {
-        if (partIndex < textParts.length) {
-            const currentPart = textParts[partIndex];
-            
-            if (currentPart.type === 'text') {
-                if (charIndex < currentPart.content.length) {
-                    const char = currentPart.content.charAt(charIndex);
-                    const textNode = document.createTextNode(char);
-                    element.insertBefore(textNode, cursor);
-                    charIndex++;
-                    
-                    // Variable speed based on character
-                    let speed = 30;
-                    if (char === ' ') speed = 15;
-                    if (char === '.' || char === '!' || char === '?') speed = 60;
-                    
-                    setTimeout(typeNext, speed + (Math.random() - 0.5) * 20);
-                } else {
-                    partIndex++;
-                    charIndex = 0;
-                    setTimeout(typeNext, 10);
-                }
-            } else if (currentPart.type === 'tag') {
-                // Insert HTML tag instantly
-                const tagElement = document.createElement('div');
-                tagElement.innerHTML = currentPart.content;
-                const actualElement = tagElement.firstChild;
-                if (actualElement) {
-                    element.insertBefore(actualElement, cursor);
-                }
-                partIndex++;
-                setTimeout(typeNext, 50);
-            }
-            
-            // Scroll to bottom
-            const storyEl = document.getElementById('story-text');
-            if (storyEl) {
-                storyEl.scrollTop = storyEl.scrollHeight;
-            }
-        } else {
-            this.finishTyping(element, cursor);
-        }
-    };
-    
-    setTimeout(typeNext, 100);
 }
 
 extractTextWithTags(element) {
