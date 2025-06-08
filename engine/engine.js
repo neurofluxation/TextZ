@@ -150,7 +150,6 @@ class Game {
         document.getElementById('location-name').textContent = "Location: " + loc.name;
         document.getElementById('location-description').textContent = loc.description;
         
-        console.log(this.player.score);
         
         const startLocationEl = document.getElementById('start-location');
         if (startLocationEl && !startLocationEl.textContent) {
@@ -176,118 +175,67 @@ class Game {
     }
     
     updateMap() {
-        // Reset all map locations with smooth transitions
+        // Reset all map locations
         Object.keys(this.locations).forEach(locId => {
             const mapEl = document.getElementById(`map-${locId}`);
             if (mapEl) {
                 mapEl.className = `map-location map-${locId}`;
-                // Add subtle pulse animation to all locations
-                mapEl.style.animation = 'locationPulse 3s ease-in-out infinite';
             }
         });
 
-        // Highlight current location with dramatic effects
+        // Highlight current location
         const currentMapEl = document.getElementById(`map-${this.player.location}`);
         if (currentMapEl) {
             currentMapEl.classList.add('current');
-            // Add glowing effect and bounce animation
         }
 
-        // Highlight connected locations with staggered animations
+        // Highlight connected locations
         const currentLoc = this.locations[this.player.location];
-        currentLoc.connections.forEach((connection, index) => {
+        currentLoc.connections.forEach(connection => {
             const connectedMapEl = document.getElementById(`map-${connection}`);
             if (connectedMapEl) {
                 connectedMapEl.classList.add('connected');
-                // Stagger the animation timing for a wave effect
             }
         });
 
-        // Draw animated roads with gradient effects
+        // Draw simple lines between connected locations
         const svg = document.querySelector('.map-roads');
         const map = document.getElementById('map');
-        const mapRect = map.getBoundingClientRect();
         
-        svg.setAttribute('width', mapRect.width);
-        svg.setAttribute('height', mapRect.height);
+        // Use offsetWidth/Height instead of getBoundingClientRect to avoid layout shifts
+        const mapWidth = map.offsetWidth;
+        const mapHeight = map.offsetHeight;
+        
+        svg.setAttribute('width', mapWidth);
+        svg.setAttribute('height', mapHeight);
         svg.innerHTML = '';
 
-        // Create gradient definitions for roads
-        const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-        
-        // Animated gradient for roads
-        const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
-        gradient.setAttribute('id', 'roadGradient');
-        gradient.setAttribute('x1', '0%');
-        gradient.setAttribute('y1', '0%');
-        gradient.setAttribute('x2', '100%');
-        gradient.setAttribute('y2', '0%');
-        
-        const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
-        stop1.setAttribute('offset', '0%');
-        stop1.setAttribute('stop-color', 'green');
-        stop1.setAttribute('stop-opacity', '0.8');
-        
-        const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
-        stop2.setAttribute('offset', '100%');
-        stop2.setAttribute('stop-color', 'red');
-        stop2.setAttribute('stop-opacity', '0.8');
-        
-        gradient.appendChild(stop1);
-        gradient.appendChild(stop2);
-        defs.appendChild(gradient);
-        svg.appendChild(defs);
-
-        // Draw roads with enhanced styling
-        currentLoc.connections.forEach((connection, index) => {
+        // Draw straight lines to connected locations
+        currentLoc.connections.forEach(connection => {
             const fromEl = document.getElementById(`map-${this.player.location}`);
             const toEl = document.getElementById(`map-${connection}`);
             
             if (fromEl && toEl) {
-                const fromRect = fromEl.getBoundingClientRect();
-                const toRect = toEl.getBoundingClientRect();
-                
-                const x1 = fromRect.left + fromRect.width / 2 - mapRect.left;
-                const y1 = fromRect.top + fromRect.height / 2 - mapRect.top;
-                const x2 = toRect.left + toRect.width / 2 - mapRect.left;
-                const y2 = toRect.top + toRect.height / 2 - mapRect.top;
+                // Use offsetLeft/Top for consistent positioning
+                const x1 = fromEl.offsetLeft + fromEl.offsetWidth / 2;
+                const y1 = fromEl.offsetTop + fromEl.offsetHeight / 2;
+                const x2 = toEl.offsetLeft + toEl.offsetWidth / 2;
+                const y2 = toEl.offsetTop + toEl.offsetHeight / 2;
 
-                // Create curved path instead of straight line
-                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                // Create simple line
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', x1);
+                line.setAttribute('y1', y1);
+                line.setAttribute('x2', x2);
+                line.setAttribute('y2', y2);
+                line.setAttribute('stroke', '#666');
+                line.setAttribute('stroke-width', '2');
                 
-                // Calculate control points for a smooth curve
-                const midX = (x1 + x2) / 2;
-                const midY = (y1 + y2) / 2;
-                const offsetX = (y2 - y1) * 0.2; // Perpendicular offset for curve
-                const offsetY = (x1 - x2) * 0.2;
-                
-                const pathData = `M ${x1} ${y1} Q ${midX + offsetX} ${midY + offsetY} ${x2} ${y2}`;
-                path.setAttribute('d', pathData);
-                path.setAttribute('stroke', 'url(#roadGradient)');
-                path.setAttribute('stroke-width', '4');
-                path.setAttribute('fill', 'none');
-                path.setAttribute('stroke-linecap', 'round');
-                
-                // Add dashed animation effect
-                const pathLength = path.getTotalLength();
-                path.style.strokeDasharray = `${pathLength * 0.1} ${pathLength * 0.05}`;
-                path.style.strokeDashoffset = pathLength;
-                path.style.animation = `roadFlow 3s linear infinite ${index * 0.5}s`;
-                
-                // Add glow effect
-                path.style.filter = 'drop-shadow(0 0 8px rgba(171, 76, 222, 0.6))';
-                
-                svg.appendChild(path);
-
-                // Add particle effects along the path
-                this.createPathParticles(path, index);
+                svg.appendChild(line);
             }
         });
-
-        // Add screen shake effect when updating
-        map.style.animation = 'mapUpdate 0.5s ease-out';
     }
-
+    
     // Helper method for particle effects
     createPathParticles(path, delay) {
         const particle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');

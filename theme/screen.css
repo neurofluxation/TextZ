@@ -79,7 +79,7 @@ body::before {
 
 @media (min-width: 1024px) {
     .game-container {
-        grid-template-columns: 1fr 800px;
+        grid-template-columns: 1fr 600px;
     }
 }
 
@@ -113,7 +113,6 @@ body::before {
 }
 
 .stats-bar {
-    position: absolute;
     width: 98%;
     padding: 0;
     grid-area: stats;
@@ -467,6 +466,8 @@ body::before {
     background-repeat: no-repeat;
     border-radius: 8px;
     border: 2px solid #34495e;
+    
+    box-sizing: border-box;
 }
 
 @media (min-width: 768px) {
@@ -1076,16 +1077,14 @@ a:hover {
 #score-text {
   position: absolute;
   display: block;
-  bottom: 0px;
-  min-width: 100px;
+  width: 200px;
   height: 34px;
   left: 0.25em;
+  bottom: 0px;
   background-color: #0d3410;
   text-align: center;
   border-top-left-radius: 16px;
   border-top-right-radius: 16px;
-  top: auto;
-  right: auto;
   font-size: 1.3em;
   font-weight: bold;
   line-height: 2em;
@@ -1122,6 +1121,14 @@ a:hover {
 @keyframes typingGlow {
     0%, 100% { opacity: 0; }
     50% { opacity: 1; }
+}
+
+.map-roads {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 1;
 }
 
 /* Enhanced scrollbar with zombie theme */
