@@ -431,6 +431,9 @@ class Game {
                 text: 'Decline Trade',
                 action: 'game.declineTrade()'
             });
+            setTimeout(function() {
+              game.declineTrade();
+            }, 3500);
         } else {
             this.player.inventory.forEach(item => {
                 tradeButtons.push({
